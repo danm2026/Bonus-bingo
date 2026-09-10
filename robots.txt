@@ -1,0 +1,7 @@
+User-agent: *
+Disallow:
+
+# This file only asks well-behaved crawlers to back off - it does not
+# block scrapers or bots that ignore it. See BOT_PROTECTION.md for the
+# real protection (Cloudflare / hosting-level), which has to be switched
+# on where your domain is hosted, not in this file.
