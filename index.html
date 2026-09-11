@@ -584,12 +584,12 @@ html, body { margin:0 !important; padding:0 !important; width:100% !important; m
 /* FINAL PACKAGE REPAIR: keep the approved artwork as the single visual layer. */
 html, body {
   width: 100% !important;
-  height: 100% !important;
+  min-height: 100% !important;
   min-width: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow-x: hidden !important;
-  overflow-y: hidden !important;
+  overflow-y: auto !important;
   background: #05bceb !important;
 }
 *, *::before, *::after { box-sizing: border-box; }
@@ -597,11 +597,11 @@ html, body {
   width: 100% !important;
   max-width: none !important;
   min-width: 0 !important;
-  height: 100dvh !important;
   min-height: 100dvh !important;
   margin: 0 !important;
   padding: 0 !important;
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   background: #05bceb !important;
 }
 .showcase-landing {
@@ -705,7 +705,7 @@ html, body {
   </div>
 
   <!-- ===== Game chooser (Phase 2): cash games + free bingo, pulled live from admin-configured rooms ===== -->
-  <div id="game-chooser"></div>
+  <div id="game-chooser" style="display:none"></div>
 
   <div class="tabs" style="display:none">
     <button class="tab-btn active" id="tab-paid-btn" onclick="switchTab('paid')">💷 Paid Bingo</button>
