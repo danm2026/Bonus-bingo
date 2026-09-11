@@ -937,7 +937,7 @@ async function submitLogin(){
 
   try {
     // Does this player already exist?
-    const { data: existing, error: findErr } = await supabase.from('bingo_players').select('name,pin_hash').ilike('name', name).maybeSingle();
+    const { data: existing, error: findErr } = await supabase.from('bingo_players').select('name').ilike('name', name).maybeSingle();
     if(findErr) throw findErr;
 
     if(!existing){
