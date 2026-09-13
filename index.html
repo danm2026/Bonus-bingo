@@ -803,7 +803,9 @@ html, body {
         <select id="admin-room-edit"></select>
         <select id="admin-room-time"></select>
         <button class="btn btn-blue" onclick="applyRoomChange()">Apply Room &amp; Time</button>
+        <button class="btn btn-red" onclick="deleteSelectedRoom()">🗑 Delete Room</button>
       </div>
+      <p style="font-size:.76rem;color:#b91c1c;margin:7px 0 0">Deleting a room removes its games, cards and calls. Winner history is kept separately so players can still see past winners. You can delete winner-history records below from Admin.</p>
       <div class="admin-row">
         <input type="text" id="admin-free-room-name" placeholder="New room name">
         <input type="time" id="admin-free-room-time">
@@ -898,7 +900,8 @@ let roomsCache = [];
 let gamesCache = {};      // room_id -> current/latest game object
 let cardsCache = {};      // game_id -> array of cards
 let callsCache = {};      // game_id -> array of called numbers in order
-let winsCache = {};       // game_id -> array of win rows
+let winsCache = {};
+let winnerHistoryCache = [];       // game_id -> array of win rows
 
 let autoCallTimers = {};  // game_id -> interval id (per-room auto-call, admin side)
 let countdownTickers = {}; // room_id -> interval id (UI countdown refresh)
@@ -1093,6 +1096,7 @@ async function loadRooms(){
     if(error){ console.error(error); return; }
     roomsCache = data || [];
     await Promise.all(roomsCache.map(r => loadRoomGame(r.id)));
+    await loadWinnerHistory();
     renderRooms();
     renderAdminRoomSelects();
   } catch(err){ console.error('loadRooms failed:', err); }
@@ -1121,6 +1125,39 @@ async function loadWins(gameId){
   const { data } = await supabase.from('bingo_wins').select('*').eq('game_id', gameId).order('created_at', { ascending: true });
   winsCache[gameId] = data || [];
 }
+
+async function loadWinnerHistory(){
+  if(!supabase) return;
+  const { data, error } = await supabase.from('bingo_wins').select('*').order('created_at', { ascending: false }).limit(200);
+  if(error){ console.error('loadWinnerHistory failed:', error); return; }
+  winnerHistoryCache = data || [];
+}
+
+async function deleteWinnerRecord(winId){
+  if(!isAdmin) return alert('Admin sign-in required.');
+  if(!winId) return;
+  if(!confirm('Delete this winner record from the public winners history?')) return;
+  const { error } = await supabase.from('bingo_wins').delete().eq('id', winId);
+  if(error) return alert('Could not delete winner record: ' + error.message);
+  winnerHistoryCache = winnerHistoryCache.filter(w => w.id !== winId);
+  Object.keys(winsCache).forEach(k => { winsCache[k] = (winsCache[k] || []).filter(w => w.id !== winId); });
+  renderAdminDashboard();
+  renderRooms();
+}
+window.deleteWinnerRecord = deleteWinnerRecord;
+
+async function deleteAllWinnerHistory(){
+  if(!isAdmin) return alert('Admin sign-in required.');
+  if(!winnerHistoryCache.length) return alert('There are no winner records to delete.');
+  if(!confirm('Delete ALL winner history? This cannot be undone and removes it from the public Winners section too.')) return;
+  const { error } = await supabase.from('bingo_wins').delete().not('id','is',null);
+  if(error) return alert('Could not delete winner history: ' + error.message);
+  winnerHistoryCache = [];
+  winsCache = {};
+  renderAdminDashboard();
+  renderRooms();
+}
+window.deleteAllWinnerHistory = deleteAllWinnerHistory;
 
 /* ============ ADMIN: ROOM/GAME MANAGEMENT ============ */
 function toggleAdminPanel(){
@@ -1324,6 +1361,24 @@ async function applyRoomChange(){
   }
   await loadRooms();
   alert(`✓ ${room.name} scheduled for ${time}.`);
+}
+
+async function deleteSelectedRoom(){
+  if(!isAdmin) return alert('Admin sign-in required.');
+  const roomId=document.getElementById('admin-room-edit')?.value;
+  const room=roomsCache.find(r=>r.id===roomId);
+  if(!room) return alert('Choose a room to delete.');
+  const game=gamesCache[roomId];
+  if(!confirm(`Delete "${room.name}" permanently?\n\nThis will remove the room and its games, cards and called numbers. Winner history will be preserved for players.\n\nThis cannot be undone.`)) return;
+  const {error}=await supabase.from('bingo_rooms').delete().eq('id',roomId);
+  if(error){
+    alert('Could not delete room: '+error.message+'\n\nRun room_delete_migration.sql in Supabase SQL Editor, then try again.');
+    return;
+  }
+  delete gamesCache[roomId];
+  if(game){ delete cardsCache[game.id]; delete callsCache[game.id]; delete winsCache[game.id]; }
+  await loadRooms();
+  alert(`✓ ${room.name} was deleted.`);
 }
 
 async function createAndApplyRoom(){
@@ -1961,13 +2016,22 @@ function openMyTicketsModal(){
   openModal(`<div class="modal-title">🎟️ My Tickets</div>${rows}`);
 }
 function openWinnersModal(){
-  const wins = allWinsFlat();
-  const rows = wins.length ? wins.map(w => `
+  const paidGames = roomsCache.filter(r => r.mode === 'paid').map(r => ({ room:r, game:gamesCache[r.id] })).filter(x => x.game);
+  const potRows = paidGames.length ? paidGames.map(({room,game}) => `
     <div class="win-history-row">
-      <div><strong>${escapeHtml(w.player_name)}</strong><br><span style="font-size:.72rem;color:var(--muted)">${new Date(w.created_at).toLocaleString('en-GB')}</span></div>
-      <div style="text-align:right"><span class="tier-pill">${tierLabel(w.tier)}</span><br><strong style="color:var(--brand-dark)">${formatMoney(w.payout)}</strong></div>
-    </div>`).join('') : `<p style="color:var(--muted);text-align:center">No winners yet - be the first!</p>`;
-  openModal(`<div class="modal-title">🏆 Winners</div>${rows}`);
+      <div><strong>${escapeHtml(room.name)}</strong><br><span style="font-size:.72rem;color:var(--muted)">Prize pots</span></div>
+      <div style="text-align:right;line-height:1.55">
+        <div><strong>1 Line</strong> ${formatMoney(game.pot_one || 0)}</div>
+        <div><strong>2 Lines</strong> ${formatMoney(game.pot_two || 0)}</div>
+        <div><strong>Full House</strong> ${formatMoney(game.pot_full || 0)}</div>
+      </div>
+    </div>`).join('') : `<p style="color:var(--muted);text-align:center">No paid game prize pots available yet.</p>`;
+  const historyRows = winnerHistoryCache.length ? winnerHistoryCache.map(w => `
+    <div class="win-history-row">
+      <div><strong>${escapeHtml(w.player_name)}</strong><br><span style="font-size:.72rem;color:var(--muted)">${tierLabel(w.tier)} • ${new Date(w.created_at).toLocaleString('en-GB')}</span></div>
+      <strong style="color:#078a4c">${formatMoney(w.payout)}</strong>
+    </div>`).join('') : `<p style="color:var(--muted);text-align:center">No winners recorded yet.</p>`;
+  openModal(`<div class="modal-title">🏆 Winners</div><p style="font-size:.8rem;color:var(--muted);margin:0 0 10px">Current prize pots</p>${potRows}<h4 style="margin:16px 0 6px;color:#153e87">Winner History</h4>${historyRows}`);
 }
 window.openHomeModal = openHomeModal;
 window.openMyTicketsModal = openMyTicketsModal;
@@ -2120,7 +2184,7 @@ function renderAdminDashboard(){
   Object.values(winsCache).forEach(arr => { allWins = allWins.concat(arr); });
   allWins.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
   document.getElementById('admin-winners-log').innerHTML = allWins.length
-    ? allWins.slice(0,30).map(w => `<div class="win-log-item">${tierLabel(w.tier)} - <strong>${escapeHtml(w.player_name)}</strong> - ${formatMoney(w.payout)} - ${new Date(w.created_at).toLocaleString('en-GB')}</div>`).join('')
+    ? `<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-red" onclick="deleteAllWinnerHistory()">🗑 Delete All Winner History</button></div>` + allWins.slice(0,50).map(w => `<div class="win-log-item" style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span>${tierLabel(w.tier)} - <strong>${escapeHtml(w.player_name)}</strong> - ${formatMoney(w.payout)} - ${new Date(w.created_at).toLocaleString('en-GB')}</span><button class="btn btn-red" style="padding:5px 8px;font-size:.7rem" onclick="deleteWinnerRecord('${w.id}')">Delete</button></div>`).join('')
     : '<p style="font-size:.82rem;color:var(--muted)">No wins yet.</p>';
 }
 
@@ -2210,19 +2274,54 @@ function openQrModal(){
   const siteUrl = SITE_URL;
   openModal(`
     <div class="modal-title" style="font-size:1.3rem">Join Website</div>
-    <div class="qr-modal-sub">Scan with a phone camera to open the game or copy the link.</div>
+    <div class="qr-modal-sub">Scan the QR code, or copy/share the website link. Tap the QR code itself to copy it.</div>
     <div class="qr-modal-outer">
-      <div id="qr-modal-target" class="qr-modal-box"></div>
+      <button id="qr-modal-target" class="qr-modal-box" type="button" aria-label="Copy QR code" title="Tap to copy QR code" style="border:0;cursor:pointer" onclick="copyQrImage()"></button>
       <div class="qr-modal-caption">📱 Scan to Open Game</div>
+      <div class="qr-modal-sub" style="margin-top:5px">Tap QR code to copy it</div>
     </div>
-    <button class="qr-copy-btn" onclick="copyQrLink('${siteUrl.replace(/'/g,"\\'")}')">🔗 Copy Website Link</button>
+    <button class="qr-copy-btn" onclick="copyQrLink('${siteUrl.replace(/'/g,"\'")}')">🔗 Copy Website Link</button>
+    <button class="qr-copy-btn" onclick="shareQrLink('${siteUrl.replace(/'/g,"\'")}')">📤 Share Website Link</button>
+    <button class="qr-copy-btn" onclick="copyQrImage()">🖼 Copy QR Code Image</button>
     <button class="qr-close-btn" onclick="closeModal()">Close</button>
   `);
   const target = document.getElementById('qr-modal-target');
-  if(target && window.QRCode){ new QRCode(target, { text: siteUrl, width: 200, height: 200 }); }
+  if(target && window.QRCode){ new QRCode(target, { text: siteUrl, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.H }); }
 }
 
-function copyQrLink(url){
+async function shareQrLink(url){
+  const siteUrl = url || SITE_URL;
+  try{
+    if(navigator.share) await navigator.share({title:'Bonus Bingo', text:'Join Bonus Bingo', url:siteUrl});
+    else await copyQrLink(siteUrl);
+  }catch(err){ if(err && err.name !== 'AbortError') await copyQrLink(siteUrl); }
+}
+
+async function copyQrImage(){
+  const target=document.getElementById('qr-modal-target');
+  const canvas=target?.querySelector('canvas');
+  const img=target?.querySelector('img');
+  try{
+    if(navigator.clipboard && window.ClipboardItem){
+      let blob=null;
+      if(canvas) blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+      else if(img){
+        const c=document.createElement('canvas'); c.width=img.naturalWidth||200; c.height=img.naturalHeight||200;
+        c.getContext('2d').drawImage(img,0,0); blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
+      }
+      if(blob){ await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); showQrFlash('QR copied!'); return true; }
+    }
+  }catch(e){ console.warn('QR image clipboard unavailable',e); }
+  return await copyQrLink(SITE_URL);
+}
+
+function showQrFlash(msg){
+  document.querySelectorAll('.qr-copy-btn').forEach(btn=>{
+    if(btn.textContent.includes('Copy QR Code Image')){ const old=btn.textContent; btn.textContent='✓ '+msg; setTimeout(()=>btn.textContent=old,1600); }
+  });
+}
+
+async function copyQrLink(url){
   const btn = document.querySelector('.qr-copy-btn');
   const flash = (msg) => { if(btn){ const old = btn.textContent; btn.textContent = msg; setTimeout(() => btn.textContent = old, 1600); } };
   // Off-screen (not hidden) textarea trick: works even where the newer
@@ -2240,12 +2339,10 @@ function copyQrLink(url){
   let copied = false;
   try { copied = document.execCommand('copy'); } catch(e){ copied = false; }
   document.body.removeChild(temp);
-  if(copied){ flash('Copied!'); return; }
+  if(copied){ flash('Copied!'); return true; }
   if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(() => flash('Copied!')).catch(() => flash('Could not copy'));
-  } else {
-    flash('Could not copy');
-  }
+    try { await navigator.clipboard.writeText(url); flash('Copied!'); return true; } catch(e) { flash('Could not copy'); return false; }
+  } else { flash('Could not copy'); return false; }
 }
 
 /* ============ PHASE 5: PUSH NOTIFICATIONS ============
@@ -2302,6 +2399,10 @@ window.togglePlayerPaid = togglePlayerPaid;
 window.renderPaidPlayerAdmin = renderPaidPlayerAdmin;
 window.applyRoomChange = applyRoomChange;
 window.createAndApplyRoom = createAndApplyRoom;
+window.deleteSelectedRoom = deleteSelectedRoom;
+window.shareQrLink = shareQrLink;
+window.copyQrImage = copyQrImage;
+window.copyQrLink = copyQrLink;
 
 const previewMode = new URLSearchParams(location.search).has('preview');
 if(previewMode){

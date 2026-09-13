@@ -67,7 +67,7 @@ create index if not exists bingo_calls_game_idx on bingo_calls(game_id);
 -- ---------- Wins (payout records per game) ----------
 create table if not exists bingo_wins (
   id uuid primary key default gen_random_uuid(),
-  game_id uuid not null references bingo_games(id) on delete cascade,
+  game_id uuid references bingo_games(id) on delete set null,
   tier text not null,                          -- line | two_lines | full_house
   card_id uuid references bingo_cards(id) on delete set null,
   player_name text not null,
@@ -107,6 +107,10 @@ drop policy if exists "rooms writable" on bingo_rooms;
 create policy "rooms writable" on bingo_rooms for insert with check (true);
 drop policy if exists "rooms updatable" on bingo_rooms;
 create policy "rooms updatable" on bingo_rooms for update using (true);
+drop policy if exists "rooms deletable by admins" on bingo_rooms;
+create policy "rooms deletable by admins" on bingo_rooms
+  for delete
+  using (exists (select 1 from bingo_admins where bingo_admins.user_id = auth.uid()));
 
 drop policy if exists "games readable" on bingo_games;
 create policy "games readable" on bingo_games for select using (true);
@@ -136,7 +140,9 @@ create policy "wins readable" on bingo_wins for select using (true);
 drop policy if exists "wins writable" on bingo_wins;
 create policy "wins writable" on bingo_wins for insert with check (true);
 drop policy if exists "wins deletable" on bingo_wins;
-create policy "wins deletable" on bingo_wins for delete using (true);
+drop policy if exists "wins deletable by admins" on bingo_wins;
+create policy "wins deletable by admins" on bingo_wins
+  for delete using (exists (select 1 from bingo_admins where bingo_admins.user_id = auth.uid()));
 
 -- Admins table: a signed-in user can check their OWN row (needed for
 -- the admin-login check right after signInWithPassword), but nobody
