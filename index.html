@@ -117,6 +117,14 @@ input,select{ border:1px solid var(--border); border-radius:8px; padding:10px; b
 .modal-close{ float:right; background:none; border:0; font-size:1.2rem; cursor:pointer; color:var(--muted); }
 .modal-title{ font-weight:900; font-size:1.2rem; margin:0 0 10px; }
 .wa-live-btn{ position:fixed; right:14px; bottom:100px; z-index:500; background:#25D366; color:#fff; border:0; border-radius:999px; padding:12px 16px; font-weight:900; box-shadow:0 8px 18px rgba(0,0,0,.28); display:flex; align-items:center; gap:7px; cursor:pointer; font-size:.85rem; }
+.pay-qr-widget{ position:fixed; right:14px; bottom:56px; z-index:500; background:#08bde9; color:#fff; border:0; border-radius:999px; padding:8px 12px; font-weight:900; box-shadow:0 8px 18px rgba(0,0,0,.28); display:flex; align-items:center; gap:5px; cursor:pointer; font-size:.72rem; }
+.qr-modal-outer{ background:#f1f5f9; border-radius:16px; padding:16px; margin:14px 0; }
+.qr-modal-box{ width:100%; max-width:220px; margin:0 auto; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:12px; padding:14px; box-sizing:border-box; }
+.qr-modal-box canvas, .qr-modal-box img{ width:100%!important; height:auto!important; }
+.qr-modal-caption{ text-align:center; font-weight:900; color:var(--brand-dark); margin-top:12px; font-size:.95rem; }
+.qr-modal-sub{ text-align:center; color:var(--muted); font-size:.9rem; margin:6px 0 0; }
+.qr-copy-btn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:var(--brand-dark); color:#fff; border:0; border-radius:12px; padding:14px; font-weight:900; font-size:1rem; cursor:pointer; margin-top:6px; }
+.qr-close-btn{ display:block; width:100%; background:#64748b; color:#fff; border:0; border-radius:12px; padding:14px; font-weight:900; font-size:1rem; cursor:pointer; margin-top:10px; }
 .game-chooser-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:14px; }
 .game-chooser-card{ background:#fff; border:2px solid var(--border); border-radius:16px; padding:12px; cursor:pointer; transition:transform .1s; }
 .game-chooser-card:active{ transform:scale(.98); }
@@ -839,6 +847,10 @@ try {
 } catch(err){
   console.error('Supabase failed to initialize:', err);
 }
+
+// Catch password-recovery links: Supabase redirects back to this site with a
+// recovery session already active, but this site has no dedicated "set new
+// password" screen, so prompt for one directly the moment that happens.
 if (supabase) {
   supabase.auth.onAuthStateChange(async (event, session) => {
     if (event === 'PASSWORD_RECOVERY') {
@@ -851,6 +863,7 @@ if (supabase) {
     }
   });
 }
+
 let isAdmin = false;
 let adminSession = null;
 let currentPlayer = localStorage.getItem('bingo_player_name') || '';
@@ -2066,6 +2079,45 @@ function injectWhatsAppButton(){
   document.body.appendChild(btn);
 }
 
+/* ============ PAY-BY-QR FLOATING WIDGET (sits under Live Chat) ============
+   A permanent pill button (styled like Live Chat) that pops up a modal
+   showing a QR code for this website, plus a "Copy Link" button - so
+   players can either scan it or copy the link to share elsewhere. */
+function injectPayQrWidget(){
+  if(document.getElementById('pay-qr-widget')) return;
+  const wrap = document.createElement('button');
+  wrap.id = 'pay-qr-widget';
+  wrap.className = 'pay-qr-widget';
+  wrap.innerHTML = '🔗 QR Code';
+  wrap.onclick = openQrModal;
+  document.body.appendChild(wrap);
+}
+
+function openQrModal(){
+  const siteUrl = window.location.origin + window.location.pathname;
+  openModal(`
+    <div class="modal-title" style="font-size:1.3rem">Join Website</div>
+    <div class="qr-modal-sub">Scan with a phone camera to open the game or copy the link.</div>
+    <div class="qr-modal-outer">
+      <div id="qr-modal-target" class="qr-modal-box"></div>
+      <div class="qr-modal-caption">📱 Scan to Open Game</div>
+    </div>
+    <button class="qr-copy-btn" onclick="copyQrLink('${siteUrl.replace(/'/g,"\\'")}')">🔗 Copy Website Link</button>
+    <button class="qr-close-btn" onclick="closeModal()">Close</button>
+  `);
+  const target = document.getElementById('qr-modal-target');
+  if(target && window.QRCode){ new QRCode(target, { text: siteUrl, width: 200, height: 200 }); }
+}
+
+function copyQrLink(url){
+  const done = () => { const btn = document.querySelector('.qr-copy-btn'); if(btn){ const old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = old, 1500); } };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(done).catch(() => alert('Could not copy - long-press the link above instead.'));
+  } else {
+    alert('Could not copy - long-press the link above instead.');
+  }
+}
+
 /* ============ PHASE 5: PUSH NOTIFICATIONS ============
    Registers this device for push and saves the subscription so a
    Supabase Edge Function (see PUSH_SETUP.md) can alert the host's phone
@@ -2145,6 +2197,7 @@ if(previewMode){
   startRealtime();
   if(playerVerified) startPresence();
   injectWhatsAppButton();
+  injectPayQrWidget();
   setInterval(tickCountdowns, 1000);           // smooth per-second countdowns
   setInterval(loadRooms, 30000);               // slow safety-net poll in case realtime ever drops
 }
