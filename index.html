@@ -1655,20 +1655,64 @@ async function buyCards(roomId){
   await finishBuyCards(room, game, name, qty);
 }
 
+function normaliseTicketGrid(grid){
+  // A 90-ball ticket is exactly 3 rows x 9 columns. Each cell is either
+  // an integer from 1-90 or a genuine JSON null (blank square).
+  // Do not coerce arbitrary values with Number(): that can hide malformed
+  // ticket data and was the source of the confusing validation error.
+  if(!Array.isArray(grid) || grid.length !== 3){
+    throw new Error('Could not create a valid bingo ticket.');
+  }
+  const clean = grid.map(row => {
+    if(!Array.isArray(row) || row.length !== 9){
+      throw new Error('Could not create a valid bingo ticket.');
+    }
+    return row.map(cell => {
+      if(cell === null) return null;
+      if(typeof cell !== 'number' || !Number.isInteger(cell) || cell < 1 || cell > 90){
+        throw new Error('Could not create a valid bingo ticket.');
+      }
+      return cell;
+    });
+  });
+
+  // Validate the complete ticket before sending it to Supabase.
+  const flat = clean.flat();
+  if(flat.length !== 27 || flat.filter(v => v !== null).length !== 15 ||
+     flat.some(v => v !== null && (!Number.isInteger(v) || v < 1 || v > 90))){
+    throw new Error('Could not create a valid bingo ticket.');
+  }
+
+  // Return a plain JSON value so no undefined/typed-array/special JS values
+  // can reach the Supabase JSONB column.
+  return JSON.parse(JSON.stringify(clean));
+}
+
 async function finishBuyCards(room, game, name, qty){
   const existingFlatSet = new Set((cardsCache[game.id] || []).map(c => JSON.stringify(c.numbers)));
   const newCards = [];
-  for(let i = 0; i < qty; i++){
-    const grid = generateCardGrid(existingFlatSet);
-    newCards.push({
-      game_id: game.id, player_name: name, numbers: grid,
-      has_paid: room.mode === 'free' ? true : false,
-      amount_paid: room.mode === 'free' ? 0 : room.entry_fee
-    });
+  try {
+    for(let i = 0; i < qty; i++){
+      const generated = generateCardGrid(existingFlatSet);
+      const grid = normaliseTicketGrid(generated);
+      newCards.push({
+        game_id: game.id, player_name: name, numbers: grid,
+        has_paid: room.mode === 'free' ? true : false,
+        amount_paid: room.mode === 'free' ? 0 : room.entry_fee
+      });
+    }
+  } catch(err){
+    console.error('Ticket generation failed:', err);
+    alert('Could not create cards: ' + (err.message || 'Invalid ticket generated.'));
+    return;
   }
 
   const { error } = await supabase.from('bingo_cards').insert(newCards);
-  if(error){ alert('Could not create cards: ' + error.message); return; }
+  if(error){
+    console.error('bingo_cards insert failed:', error, 'payload:', newCards);
+    alert('Could not create cards: ' + error.message + '\n\nPlease refresh the page and try again.');
+    return;
+  }
 
   await loadCards(game.id);
   await recalcPots(game.id);
@@ -2083,6 +2127,8 @@ function renderLivePlayingCards(){
   if(!mine.length) return `<section class="live-section"><h2 class="live-title">🎟️ YOUR PLAYING CARDS</h2><div class="live-empty">Your purchased cards will appear here. Choose a room above and buy/get a card to play.</div></section>`;
   const activeMine = mine.filter(c => { const g = Object.values(gamesCache).find(x => x.id === (c.game_id || c.game_id_ref)); return g && g.status === 'active'; });
   const sourceCards = activeMine.length ? activeMine : mine;
+  // Show every card the player owns; layout CSS keeps large sets readable.
+
   const ranked = sourceCards.map((c, index) => {
     const g = Object.values(gamesCache).find(x => x.id === (c.game_id || c.game_id_ref));
     const called = new Set(callsCache[g?.id] || []);
