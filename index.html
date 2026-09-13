@@ -839,7 +839,18 @@ try {
 } catch(err){
   console.error('Supabase failed to initialize:', err);
 }
-
+if (supabase) {
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      const newPassword = prompt('Password reset link detected.\nEnter your new admin password:');
+      if (newPassword) {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) alert('Could not set new password: ' + error.message);
+        else alert('Password updated! Tap Admin and log in with your new password.');
+      }
+    }
+  });
+}
 let isAdmin = false;
 let adminSession = null;
 let currentPlayer = localStorage.getItem('bingo_player_name') || '';
