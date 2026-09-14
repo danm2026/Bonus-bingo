@@ -2005,8 +2005,9 @@ function renderGameChooser(){
   mount.innerHTML = `<div class="game-chooser-row">${cards}</div>`;
 }
 function jumpToRoom(roomId){
-  switchTab(roomsCache.find(r=>r.id===roomId)?.mode === 'free' ? 'free' : 'paid');
-  setTimeout(() => document.getElementById(`room-anchor-${roomId}`)?.scrollIntoView({behavior:'smooth', block:'start'}), 60);
+  const game = gamesCache[roomId];
+  const target = game && game.status === 'active' ? 'live-cards-section' : `room-anchor-${roomId}`;
+  setTimeout(() => document.getElementById(target)?.scrollIntoView({behavior:'smooth', block:'start'}), 60);
 }
 window.jumpToRoom = jumpToRoom;
 
@@ -2125,7 +2126,7 @@ function liveCardPriority(card, calledSet){
 
 function renderLivePlayingCards(){
   const mine = myCardsAcrossAllRooms();
-  if(!mine.length) return `<section class="live-section"><h2 class="live-title">🎟️ YOUR PLAYING CARDS</h2><div class="live-empty">Your purchased cards will appear here. Choose a room above and buy/get a card to play.</div></section>`;
+  if(!mine.length) return `<section class="live-section" id="live-cards-section"><h2 class="live-title">🎟️ YOUR PLAYING CARDS</h2><div class="live-empty">Your purchased cards will appear here. Choose a room above and buy/get a card to play.</div></section>`;
   const activeMine = mine.filter(c => { const g = Object.values(gamesCache).find(x => x.id === (c.game_id || c.game_id_ref)); return g && g.status === 'active'; });
   const sourceCards = activeMine.length ? activeMine : mine;
   // Show every card the player owns; layout CSS keeps large sets readable.
@@ -2154,7 +2155,7 @@ function renderLivePlayingCards(){
   const calls = firstGame ? (callsCache[firstGame.id] || []) : [];
   const recent = calls.slice(-8);
   const liveCopy = activeMine.length ? '🟢 LIVE GAME — your cards are automatically marked as numbers are called' : 'Your purchased cards for the next game';
-  return `<section class="live-section"><h2 class="live-title">🎟️ YOUR PLAYING CARDS</h2><div class="live-subtitle">${liveCopy}</div><div class="live-cards-grid ${countClass}">${html}</div><div class="live-call-strip"><span class="live-call-label">${activeMine.length ? 'LATEST CALLS' : 'NUMBERS CALLED'}</span>${recent.length ? recent.map((n,i)=>`<span class="live-call-ball ${i===recent.length-1?'latest':''}">${n}</span>`).join('') : '<span style="font-size:.68rem;color:#58708f">No numbers called yet.</span>'}</div></section>`;
+  return `<section class="live-section" id="live-cards-section"><h2 class="live-title">🎟️ YOUR PLAYING CARDS</h2><div class="live-subtitle">${liveCopy}</div><div class="live-cards-grid ${countClass}">${html}</div><div class="live-call-strip"><span class="live-call-label">${activeMine.length ? 'LATEST CALLS' : 'NUMBERS CALLED'}</span>${recent.length ? recent.map((n,i)=>`<span class="live-call-ball ${i===recent.length-1?'latest':''}">${n}</span>`).join('') : '<span style="font-size:.68rem;color:#58708f">No numbers called yet.</span>'}</div></section>`;
 }
 
 function openCompactBuy(roomId){
