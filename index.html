@@ -2115,6 +2115,8 @@ function renderCompactRoomCard(room){
   const msUntil = game.scheduled_start ? new Date(game.scheduled_start).getTime() - Date.now() : null;
   const salesClosed = room.mode === 'paid' && game.status === 'scheduled' && msUntil !== null && msUntil <= BUY_CUTOFF_MS;
   const myCards = (cardsCache[game.id] || []).filter(c => currentPlayer && c.player_name && c.player_name.toLowerCase() === currentPlayer.toLowerCase());
+  const roomCards = cardsCache[game.id] || [];
+  const uniquePlayerCount = new Set(roomCards.map(c => (c.player_name || '').toLowerCase())).size;
   const palette = room.mode === 'free'
     ? ['#19d676','#079a52']
     : (room.id === roomsCache.find(r=>r.id===room.id)?.id ? ['#ff22a7','#a90078'] : ['#0aa9f5','#0756c7']);
@@ -2122,7 +2124,7 @@ function renderCompactRoomCard(room){
   const status = game.status === 'active' ? `LIVE • ${calledArr.length}/90` : (salesClosed ? 'SALES CLOSED' : `STARTS ${start}`);
   return `<article class="compact-room" id="room-anchor-${room.id}" style="--room-from:${palette[0]};--room-to:${palette[1]}">
     <div class="compact-room-top"><div class="compact-room-ball">${ballNum}</div><div><div class="compact-room-name">${escapeHtml(room.name)}</div><div class="compact-room-mode">${room.mode === 'paid' ? '💷 PAID GAME' : '🎉 FREE BINGO'}</div></div></div>
-    <div class="compact-room-info"><div><span>Game</span><strong>${status}</strong></div><div><span>${room.mode === 'paid' ? 'Jackpot' : 'Players'}</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_full || 0) : (cardsCache[game.id] || []).length}</strong></div><div><span>Players</span><strong>${(cardsCache[game.id] || []).length}</strong></div><div><span>Your Cards</span><strong>${myCards.length}</strong></div></div>
+    <div class="compact-room-info"><div><span>Game</span><strong>${status}</strong></div><div><span>${room.mode === 'paid' ? 'Jackpot' : 'Players'}</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_full || 0) : uniquePlayerCount}</strong></div><div><span>${room.mode === 'paid' ? 'Players' : 'Cards Sold'}</span><strong>${room.mode === 'paid' ? uniquePlayerCount : roomCards.length}</strong></div><div><span>Your Cards</span><strong>${myCards.length}</strong></div></div>
     <button class="compact-join ${salesClosed ? 'closed' : ''}" onclick="${game.status === 'active' ? `jumpToRoom('${room.id}')` : (salesClosed ? `jumpToRoom('${room.id}')` : `openCompactBuy('${room.id}')`)}">${game.status === 'active' ? 'VIEW LIVE GAME' : (salesClosed ? 'GET READY' : (room.mode === 'paid' ? 'BUY CARD(S)' : 'GET CARD(S)'))}</button>
   </article>`;
 }
