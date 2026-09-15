@@ -1485,7 +1485,6 @@ async function advanceGame(roomId, manualCall){
 
   if(game.status === 'scheduled' && game.scheduled_start){
     if(now >= new Date(game.scheduled_start).getTime()){
-      await lockOutUnpaidCards(game, room);
       await supabase.from('bingo_games').update({ status: 'active', started_at: new Date().toISOString() }).eq('id', game.id);
       await loadRoomGame(roomId);
       return;
@@ -1502,22 +1501,9 @@ async function advanceGame(roomId, manualCall){
   }
 }
 
-/* Level 1 manual payment enforcement: the moment a paid room's countdown
-   hits zero and the game locks, any card that's still unpaid at that
-   exact instant is removed for good - it never enters the game, is never
-   checked against called numbers, and can never win. Confirming payment
-   (via the admin tool) any time before this moment is what keeps a
-   player's card safe. Free rooms skip this entirely since every card
-   there is created already-paid. */
-async function lockOutUnpaidCards(game, room){
-  if(room.mode !== 'paid') return;
-  const cards = cardsCache[game.id] || [];
-  const unpaidIds = cards.filter(c => !c.has_paid).map(c => c.id);
-  if(unpaidIds.length === 0) return;
-  await supabase.from('bingo_cards').delete().in('id', unpaidIds);
-  await loadCards(game.id);
-  await recalcPots(game.id);
-}
+/* Cards are never deleted for being unpaid - the host confirms payment
+   manually in Admin (Paid/Unpaid tag) any time, before or after a game
+   starts, and can chase up or void a specific card by hand if needed. */
 
 async function doCallNumber(game){
   const called = callsCache[game.id] || [];
@@ -1645,8 +1631,6 @@ setInterval(async () => {
 }, 1000);
 
 /* ============ PLAYER: BUY CARDS ============ */
-const BUY_CUTOFF_MS = 60000; // paid rooms stop selling cards 60s before kickoff
-
 async function buyCards(roomId){
   const nameInput = document.getElementById(`buy-name-${roomId}`);
   const qtyInput = document.getElementById(`buy-qty-${roomId}`);
@@ -1662,22 +1646,17 @@ async function buyCards(roomId){
   if(!game || game.status !== 'scheduled'){
     return alert('This room is not open for new cards right now - wait for the next scheduled game.');
   }
-  if(room.mode === 'paid' && game.scheduled_start){
-    const msUntilStart = new Date(game.scheduled_start).getTime() - Date.now();
-    if(msUntilStart <= BUY_CUTOFF_MS){
-      return alert('Card sales for this game have closed - it starts in under a minute. You can join the next scheduled game.');
-    }
-  }
 
-  // Phase 3: show a price confirmation (with Monzo pay link + QR) before
-  // creating paid cards. Free rooms skip straight through - no charge.
+  // Reserve the cards immediately (marked unpaid for paid rooms), then
+  // show payment instructions - no separate "I've paid" click required.
+  // The host confirms payment later in Admin; cards are never deleted
+  // for staying unpaid, so there's no risk in reserving straight away.
+  await finishBuyCards(room, game, name, qty);
+
   if(room.mode === 'paid'){
     const total = qty * Number(room.entry_fee || 0);
-    const confirmed = await showPriceConfirm(qty, room.entry_fee, total);
-    if(!confirmed) return;
+    showPaymentInstructions(qty, room.entry_fee, total);
   }
-
-  await finishBuyCards(room, game, name, qty);
 }
 
 function normaliseTicketGrid(grid){
@@ -1745,31 +1724,27 @@ async function finishBuyCards(room, game, name, qty){
   renderRooms();
 }
 
-/* ============ PHASE 3: PRICE CONFIRMATION + MONZO + QR ============
-   Shows the exact amount due, a Monzo pay button (opens the Monzo app
-   directly on mobile via a monzo.me universal link, amount pre-filled),
-   and a QR code of the same link for anyone paying from another device. */
-function showPriceConfirm(qty, unitPrice, total){
-  return new Promise(resolve => {
-    const monzoUrl = `https://monzo.me/${MONZO_HANDLE}/${total.toFixed(2)}`;
-    openModal(`
-      <div class="modal-title">💷 Confirm Payment</div>
-      <p style="color:var(--muted);font-size:.9rem">${qty} ticket${qty>1?'s':''} × ${formatMoney(unitPrice)} each</p>
-      <div class="price-confirm-total">${formatMoney(total)}</div>
-      <button class="monzo-pay-btn" onclick="window.open('${monzoUrl}','_blank')"><span class="m-badge">M</span> Pay with Monzo</button>
-      <div id="qr-canvas-wrap"></div>
-      <p style="font-size:.72rem;color:var(--muted);text-align:center">Scan to pay from another phone. Your tickets are reserved now and confirmed once your host sees the payment land.</p>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button class="btn" style="flex:1" onclick="closeModal();window.__priceConfirmResolve(false)">Cancel</button>
-        <button class="btn btn-brand" style="flex:1" onclick="closeModal();window.__priceConfirmResolve(true)">I've Paid / Reserve Tickets</button>
-      </div>
-    `);
-    window.__priceConfirmResolve = resolve;
-    setTimeout(() => {
-      const wrap = document.getElementById('qr-canvas-wrap');
-      if(wrap && window.QRCode){ wrap.innerHTML=''; new QRCode(wrap, { text: monzoUrl, width: 140, height: 140 }); }
-    }, 30);
-  });
+/* ============ PHASE 3: PAYMENT INSTRUCTIONS + MONZO + QR ============
+   Your cards are already reserved by the time this shows (see buyCards).
+   This is now purely informational - the exact amount due, a Monzo pay
+   button (opens the Monzo app directly on mobile via a monzo.me
+   universal link, amount pre-filled), and a QR code of the same link
+   for anyone paying from another device. */
+function showPaymentInstructions(qty, unitPrice, total){
+  const monzoUrl = `https://monzo.me/${MONZO_HANDLE}/${total.toFixed(2)}`;
+  openModal(`
+    <div class="modal-title">💷 Your Cards Are Reserved</div>
+    <p style="color:var(--muted);font-size:.9rem">${qty} ticket${qty>1?'s':''} × ${formatMoney(unitPrice)} each</p>
+    <div class="price-confirm-total">${formatMoney(total)}</div>
+    <button class="monzo-pay-btn" onclick="window.open('${monzoUrl}','_blank')"><span class="m-badge">M</span> Pay with Monzo</button>
+    <div id="qr-canvas-wrap"></div>
+    <p style="font-size:.72rem;color:var(--muted);text-align:center">Scan to pay from another phone. Your host will confirm your payment before the game pays out any prizes.</p>
+    <button class="btn btn-brand" style="width:100%;margin-top:10px" onclick="closeModal()">Close</button>
+  `);
+  setTimeout(() => {
+    const wrap = document.getElementById('qr-canvas-wrap');
+    if(wrap && window.QRCode){ wrap.innerHTML=''; new QRCode(wrap, { text: monzoUrl, width: 140, height: 140 }); }
+  }, 30);
 }
 
 /* ============ RENDERING ============ */
@@ -1862,12 +1837,8 @@ function renderRoomCard(room){
   let gameStatus = '';
   let actionPanel = '';
   if(game.status === 'scheduled'){
-    const msUntilStart = game.scheduled_start ? (new Date(game.scheduled_start).getTime() - Date.now()) : null;
-    const salesClosed = room.mode === 'paid' && msUntilStart !== null && msUntilStart <= BUY_CUTOFF_MS;
-    gameStatus = salesClosed ? 'CARD SALES CLOSED' : 'NEXT GAME STARTS IN';
-    actionPanel = salesClosed
-      ? `<div class="main-buy-note">🔒 Card sales are closed for the final 60 seconds.<br>Get ready for the game!</div>`
-      : `<div class="main-buy-controls"><input type="text" id="buy-name-${room.id}" placeholder="Your name" value="${escapeHtml(currentPlayer)}"><input type="number" id="buy-qty-${room.id}" min="1" value="1" aria-label="Number of cards"><button class="main-green-btn" onclick="buyCards('${room.id}')">${room.mode === 'free' ? 'GET CARD(S)' : 'BUY CARD(S)'}</button></div>`;
+    gameStatus = 'NEXT GAME STARTS IN';
+    actionPanel = `<div class="main-buy-controls"><input type="text" id="buy-name-${room.id}" placeholder="Your name" value="${escapeHtml(currentPlayer)}"><input type="number" id="buy-qty-${room.id}" min="1" value="1" aria-label="Number of cards"><button class="main-green-btn" onclick="buyCards('${room.id}')">${room.mode === 'free' ? 'GET CARD(S)' : 'BUY CARD(S)'}</button></div>`;
   } else if(game.status === 'active'){
     gameStatus = 'LIVE GAME';
     actionPanel = `<div class="main-live-note">🟢 LIVE • ${calledArr.length}/90 numbers called</div>`;
@@ -2112,8 +2083,6 @@ function renderCompactRoomCard(room){
   if(!game) return '';
   const calledArr = callsCache[game.id] || [];
   const start = game.scheduled_start ? new Date(game.scheduled_start).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : 'TBA';
-  const msUntil = game.scheduled_start ? new Date(game.scheduled_start).getTime() - Date.now() : null;
-  const salesClosed = room.mode === 'paid' && game.status === 'scheduled' && msUntil !== null && msUntil <= BUY_CUTOFF_MS;
   const myCards = (cardsCache[game.id] || []).filter(c => currentPlayer && c.player_name && c.player_name.toLowerCase() === currentPlayer.toLowerCase());
   const roomCards = cardsCache[game.id] || [];
   const uniquePlayerCount = new Set(roomCards.map(c => (c.player_name || '').toLowerCase())).size;
@@ -2121,11 +2090,11 @@ function renderCompactRoomCard(room){
     ? ['#19d676','#079a52']
     : (room.id === roomsCache.find(r=>r.id===room.id)?.id ? ['#ff22a7','#a90078'] : ['#0aa9f5','#0756c7']);
   const ballNum = room.mode === 'free' ? '7' : (Number(game.colour_index || 0) % 2 ? '17' : '9');
-  const status = game.status === 'active' ? `LIVE • ${calledArr.length}/90` : (salesClosed ? 'SALES CLOSED' : `STARTS ${start}`);
+  const status = game.status === 'active' ? `LIVE • ${calledArr.length}/90` : `STARTS ${start}`;
   return `<article class="compact-room" id="room-anchor-${room.id}" style="--room-from:${palette[0]};--room-to:${palette[1]}">
     <div class="compact-room-top"><div class="compact-room-ball">${ballNum}</div><div><div class="compact-room-name">${escapeHtml(room.name)}</div><div class="compact-room-mode">${room.mode === 'paid' ? '💷 PAID GAME' : '🎉 FREE BINGO'}</div></div></div>
     <div class="compact-room-info"><div><span>Game</span><strong>${status}</strong></div><div><span>${room.mode === 'paid' ? 'Jackpot' : 'Players'}</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_full || 0) : uniquePlayerCount}</strong></div><div><span>${room.mode === 'paid' ? 'Players' : 'Cards Sold'}</span><strong>${room.mode === 'paid' ? uniquePlayerCount : roomCards.length}</strong></div><div><span>Your Cards</span><strong>${myCards.length}</strong></div></div>
-    <button class="compact-join ${salesClosed ? 'closed' : ''}" onclick="${game.status === 'active' ? `jumpToRoom('${room.id}')` : (salesClosed ? `jumpToRoom('${room.id}')` : `openCompactBuy('${room.id}')`)}">${game.status === 'active' ? 'VIEW LIVE GAME' : (salesClosed ? 'GET READY' : (room.mode === 'paid' ? 'BUY CARD(S)' : 'GET CARD(S)'))}</button>
+    <button class="compact-join" onclick="${game.status === 'active' ? `jumpToRoom('${room.id}')` : `openCompactBuy('${room.id}')`}">${game.status === 'active' ? 'VIEW LIVE GAME' : (room.mode === 'paid' ? 'BUY CARD(S)' : 'GET CARD(S)')}</button>
   </article>`;
 }
 
@@ -2191,9 +2160,7 @@ function openCompactBuy(roomId){
   const room = roomsCache.find(r=>r.id===roomId);
   const game = gamesCache[roomId];
   if(!room || !game) return;
-  const msUntil = game.scheduled_start ? new Date(game.scheduled_start).getTime() - Date.now() : null;
   if(game.status !== 'scheduled') return alert('This room is not open for new cards right now.');
-  if(room.mode === 'paid' && msUntil !== null && msUntil <= BUY_CUTOFF_MS) return alert('Card sales have closed for the final 60 seconds.');
   openModal(`<div class="modal-title">🎟️ ${escapeHtml(room.name)}</div><p style="color:var(--muted);font-size:.82rem">${room.mode === 'paid' ? 'Buy your bingo cards for this game.' : 'Get your free bingo cards for this game.'}</p><input type="text" id="compact-buy-name-${roomId}" placeholder="Your name" value="${escapeHtml(currentPlayer)}" style="width:100%;margin-bottom:8px"><input type="number" id="compact-buy-qty-${roomId}" min="1" value="1" style="width:100%;margin-bottom:10px"><button class="main-green-btn" onclick="submitCompactBuy('${roomId}')">${room.mode === 'paid' ? 'BUY CARD(S)' : 'GET CARD(S)'}</button>`);
 }
 function submitCompactBuy(roomId){
