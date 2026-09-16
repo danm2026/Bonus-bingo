@@ -980,6 +980,320 @@ html, body {
   .compact-room,.compact-ball,.compact-tag,.compact-countdown-time{transition:none!important;animation:none!important;}
 }
 </style>
+
+
+<style id="bonus-bingo-card-material-site-design">
+/* =========================================================
+   BONUS BINGO — CARD-MATCHED 3D SITE DESIGN
+   Visual layer only. Existing game/card/database logic is preserved.
+   ========================================================= */
+:root{
+  --bb-navy:#103d78;
+  --bb-blue:#087fe8;
+  --bb-cyan:#13d6ef;
+  --bb-green:#10b95f;
+  --bb-pink:#ed159d;
+  --bb-purple:#7f27e8;
+  --bb-white:#fbfeff;
+}
+
+html{background:#08bfe9;scroll-behavior:smooth;}
+body{
+  overflow-x:hidden!important;
+  background:
+    radial-gradient(circle at 8% 16%,rgba(255,255,255,.9) 0 2px,transparent 3px),
+    radial-gradient(circle at 91% 11%,rgba(255,255,255,.75) 0 3px,transparent 4px),
+    radial-gradient(circle at 16% 72%,rgba(255,255,255,.5) 0 2px,transparent 3px),
+    radial-gradient(circle at 83% 78%,rgba(255,255,255,.55) 0 3px,transparent 4px),
+    linear-gradient(135deg,#04bce9 0%,#08d0ed 28%,#22baf0 57%,#5adcf2 78%,#d9faff 100%)!important;
+}
+
+/* Main player lobby: glossy blue/cyan canvas like the card backing. */
+.compact-lobby{
+  min-height:100vh!important;
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 50% 7%,rgba(255,255,255,.42),transparent 24%),
+    radial-gradient(circle at 7% 36%,rgba(0,116,220,.24),transparent 20%),
+    radial-gradient(circle at 94% 58%,rgba(255,255,255,.24),transparent 18%),
+    linear-gradient(135deg,#05bfe9 0%,#10d2ed 27%,#20baf0 56%,#63def4 78%,#dffaff 100%)!important;
+}
+.compact-lobby::before{
+  content:"";
+  position:absolute!important;
+  z-index:-1!important;
+  width:210px;height:210px;left:-85px;top:360px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 31% 27%,#fff 0 6%,transparent 7%),
+    radial-gradient(circle at 31% 27%,#54dcff 0 29%,#0879db 58%,transparent 59%);
+  box-shadow:
+    1060px -190px 0 -54px rgba(237,21,157,.9),
+    1050px -188px 0 -38px rgba(255,255,255,.7),
+    930px 470px 0 -66px rgba(16,185,95,.9),
+    70px 670px 0 -48px rgba(255,194,32,.95);
+  opacity:.9;
+  filter:drop-shadow(0 15px 20px rgba(0,61,126,.18));
+  pointer-events:none;
+}
+.compact-lobby::after{
+  content:"";
+  position:absolute!important;
+  z-index:-1!important;
+  right:-95px;top:610px;width:250px;height:250px;border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 25%,#fff 0 7%,transparent 8%),
+    radial-gradient(circle at 34% 25%,#ff8fd8 0 31%,#c80091 60%,transparent 61%);
+  box-shadow:
+    -970px -520px 0 -70px rgba(8,127,232,.95),
+    -720px 80px 0 -74px rgba(255,205,34,.9),
+    -520px 610px 0 -62px rgba(15,185,95,.9);
+  filter:drop-shadow(0 18px 22px rgba(0,61,126,.2));
+  pointer-events:none;
+}
+
+/* Header uses the same white/blue/green/pink material language as the cards. */
+.compact-header{
+  position:relative!important;
+  overflow:visible!important;
+  padding:22px 18px 18px!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:15px!important;
+  justify-items:center!important;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(255,255,255,.32),transparent 24%),
+    radial-gradient(circle at 85% 10%,rgba(255,255,255,.22),transparent 22%),
+    linear-gradient(145deg,rgba(4,181,232,.94),rgba(58,220,244,.92))!important;
+  border-bottom:4px solid rgba(255,255,255,.88)!important;
+  box-shadow:0 14px 30px rgba(0,71,145,.24),inset 0 -5px 0 rgba(0,88,165,.12),inset 0 3px 0 rgba(255,255,255,.45)!important;
+}
+.compact-brand{
+  width:min(100%,760px)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:20px!important;
+  position:relative!important;
+  z-index:4!important;
+}
+.compact-balls{
+  position:relative!important;
+  width:132px!important;height:112px!important;
+  flex:0 0 132px!important;
+  filter:drop-shadow(0 13px 15px rgba(0,55,120,.22));
+}
+.compact-ball{
+  position:absolute!important;
+  width:66px!important;height:66px!important;
+  border:4px solid rgba(255,255,255,.82)!important;
+  color:#10284d!important;
+  font-weight:1000!important;
+  text-shadow:0 1px 0 #fff!important;
+  box-shadow:
+    inset 6px 5px 8px rgba(255,255,255,.95),
+    inset -9px -10px 13px rgba(0,0,0,.2),
+    0 8px 14px rgba(0,61,125,.28)!important;
+}
+.compact-ball::after{
+  content:""!important;
+  position:absolute!important;inset:8px!important;
+  border-radius:50%!important;
+  border:2px solid rgba(255,255,255,.55)!important;
+}
+.compact-ball:nth-child(1){left:0!important;top:0!important;background:radial-gradient(circle at 30% 24%,#e4ff92,#7bdd22 42%,#079346 72%,#05612d)!important;}
+.compact-ball:nth-child(2){left:62px!important;top:0!important;background:radial-gradient(circle at 30% 24%,#b6f1ff,#27bdf4 42%,#0875d9 72%,#064d9e)!important;}
+.compact-ball:nth-child(3){left:0!important;top:52px!important;background:radial-gradient(circle at 30% 24%,#ffd0ee,#ff3fb8 42%,#d40082 72%,#850052)!important;}
+.compact-ball:nth-child(4){left:62px!important;top:52px!important;background:radial-gradient(circle at 30% 24%,#ffc9ff,#d846f4 42%,#8a16d6 72%,#52008b)!important;}
+.compact-logo{
+  font-size:clamp(2.7rem,7vw,4.35rem)!important;
+  line-height:.78!important;
+  letter-spacing:-.06em!important;
+  color:#fff!important;
+  font-weight:1000!important;
+  text-shadow:0 4px 0 #0d67a6,0 8px 14px rgba(0,50,120,.26)!important;
+}
+.compact-logo span{
+  color:#ffd21a!important;
+  text-shadow:0 4px 0 #a75d00,0 7px 11px rgba(0,50,120,.2)!important;
+}
+.compact-tag{
+  display:inline-block!important;
+  margin-top:13px!important;
+  background:linear-gradient(180deg,#168fe8,#075bb4)!important;
+  border:2px solid rgba(255,255,255,.5)!important;
+  color:#fff!important;
+  border-radius:999px!important;
+  padding:8px 18px!important;
+  font-weight:1000!important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.42),0 5px 0 #06498d,0 10px 18px rgba(0,50,120,.2)!important;
+}
+
+/* Remove the unwanted rainbow bars that were appearing over stats text. */
+.compact-stats div::before{display:none!important;content:none!important;background:none!important;}
+.compact-stats{
+  width:min(100%,650px)!important;
+  background:rgba(255,255,255,.97)!important;
+  border:3px solid rgba(208,246,255,.98)!important;
+  border-radius:25px!important;
+  padding:12px!important;
+  box-shadow:inset 0 3px 0 #fff,0 13px 25px rgba(0,65,130,.2)!important;
+  backdrop-filter:none!important;
+}
+.compact-stats span,.compact-stats strong{color:var(--bb-navy)!important;text-shadow:none!important;background:none!important;}
+.compact-stats strong{font-weight:1000!important;}
+
+/* Countdown panel becomes a raised card rather than a flat block. */
+.compact-countdown{
+  width:min(100%,760px)!important;
+  background:rgba(255,255,255,.97)!important;
+  border:3px solid #d8f6ff!important;
+  border-radius:26px!important;
+  padding:14px!important;
+  box-shadow:inset 0 3px 0 #fff,0 14px 25px rgba(0,68,140,.2)!important;
+}
+.compact-countdown-label{color:var(--bb-navy)!important;font-weight:1000!important;}
+.compact-countdown-time{
+  border-radius:25px!important;
+  background:linear-gradient(180deg,#ff39ac,#d20b86)!important;
+  border:3px solid rgba(255,255,255,.85)!important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.38),0 7px 0 #9b075f,0 13px 22px rgba(83,0,94,.2)!important;
+  color:#fff!important;
+}
+
+/* Prize/room surfaces echo the card's white + green/blue/pink material. */
+.compact-room{
+  border-radius:27px!important;
+  border:4px solid rgba(255,255,255,.82)!important;
+  box-shadow:
+    0 10px 0 rgba(0,67,135,.16),
+    0 22px 32px rgba(0,57,120,.26),
+    inset 0 4px 0 rgba(255,255,255,.58),
+    inset 0 -8px 16px rgba(0,45,100,.12)!important;
+  transform:translateZ(0)!important;
+}
+.compact-room::before{
+  content:""!important;
+  position:absolute!important;left:7%!important;right:7%!important;top:7px!important;height:34%!important;
+  border-radius:50%!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.48),rgba(255,255,255,0))!important;
+  pointer-events:none!important;z-index:1!important;
+}
+.compact-room-info{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(238,250,255,.94))!important;
+  border:2px solid rgba(164,221,242,.75)!important;
+  border-radius:16px!important;
+  box-shadow:inset 0 2px 0 #fff,inset 0 -5px 9px rgba(0,80,140,.08),0 5px 9px rgba(0,65,125,.15)!important;
+}
+.compact-room-info span,.compact-room-info strong{color:var(--bb-navy)!important;text-shadow:none!important;}
+.compact-join{
+  background:linear-gradient(180deg,#28e27d,#08a955)!important;
+  border:2px solid rgba(255,255,255,.65)!important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 5px 0 #057442,0 10px 16px rgba(0,0,0,.2)!important;
+}
+
+/* Live card area: stable rendering + the same raised frame as the cards. */
+.live-section{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(234,250,255,.97))!important;
+  border:4px solid #8ce0f5!important;
+  border-radius:28px!important;
+  box-shadow:inset 0 3px 0 #fff,0 17px 30px rgba(0,67,135,.22)!important;
+  contain:layout paint!important;
+  transform:translateZ(0)!important;
+  backface-visibility:hidden!important;
+}
+.live-title{
+  background:linear-gradient(180deg,#36c9ff,#0875d9)!important;
+  border:2px solid rgba(255,255,255,.65)!important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.55),0 6px 0 #0755ad,0 10px 16px rgba(0,65,130,.18)!important;
+}
+.live-cards-grid{contain:layout paint!important;}
+.live-cards-grid .bingo-card-frame{
+  transform:none!important;
+  transform-style:flat!important;
+  backface-visibility:hidden!important;
+  will-change:auto!important;
+  border-radius:30px!important;
+  border:4px solid rgba(255,255,255,.92)!important;
+  padding:11px!important;
+  background:linear-gradient(145deg,#fff,#9de9ff 45%,#0874c9)!important;
+  box-shadow:0 12px 0 rgba(0,65,130,.18),0 24px 34px rgba(0,57,120,.24),inset 0 4px 0 #fff!important;
+}
+.live-cards-grid .bingo-card{
+  transform:none!important;
+  border-radius:22px!important;
+  border:3px solid #8ad8ee!important;
+  background:linear-gradient(180deg,#fff,#f9fdff 55%,#e8f7ff)!important;
+  box-shadow:inset 0 3px 0 #fff,inset 0 -6px 10px rgba(30,100,150,.1),0 5px 10px rgba(20,75,125,.16)!important;
+}
+.live-cards-grid .bingo-cell-wrap{transform:none!important;}
+.live-cards-grid .bingo-ball{transform:none!important;}
+
+/* B-I-N-G-O: match the colourful card headers, but keep the five-column format. */
+.main-card-grid .bingo-letter,.live-cards-grid .bingo-letter,.showcase-card-grid .bingo-letter{
+  border:2px solid rgba(255,255,255,.9)!important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.62),inset 0 -4px 6px rgba(0,45,110,.22),0 6px 9px rgba(13,64,122,.25)!important;
+  text-shadow:0 2px 0 rgba(0,55,110,.2)!important;
+}
+.main-card-grid .bingo-letter:nth-child(1),.live-cards-grid .bingo-letter:nth-child(1),.showcase-card-grid .bingo-letter:nth-child(1){background:linear-gradient(180deg,#ff6677,#f1264d 50%,#bd0c31)!important;color:#fff!important;}
+.main-card-grid .bingo-letter:nth-child(2),.live-cards-grid .bingo-letter:nth-child(2),.showcase-card-grid .bingo-letter:nth-child(2){background:linear-gradient(180deg,#ffc95e,#ff8a19 50%,#dc5900)!important;color:#fff!important;}
+.main-card-grid .bingo-letter:nth-child(3),.live-cards-grid .bingo-letter:nth-child(3),.showcase-card-grid .bingo-letter:nth-child(3){background:linear-gradient(180deg,#fff47b,#ffd31c 50%,#e4a800)!important;color:#15366c!important;}
+.main-card-grid .bingo-letter:nth-child(4),.live-cards-grid .bingo-letter:nth-child(4),.showcase-card-grid .bingo-letter:nth-child(4){background:linear-gradient(180deg,#63f48c,#17ca60 50%,#079248)!important;color:#fff!important;}
+.main-card-grid .bingo-letter:nth-child(5),.live-cards-grid .bingo-letter:nth-child(5),.showcase-card-grid .bingo-letter:nth-child(5){background:linear-gradient(180deg,#69ddff,#1ba5f4 50%,#0866c7)!important;color:#fff!important;}
+
+/* Keep card number balls glossy, with pink marked balls matching the site accents. */
+.main-card-grid .bingo-ball,.live-cards-grid .bingo-ball,.showcase-card-grid .bingo-ball{
+  transform:none!important;
+  background:radial-gradient(circle at 29% 20%,#fff 0%,#fff 28%,#eef8ff 58%,#bdd7eb 100%)!important;
+  border:2px solid rgba(70,130,175,.3)!important;
+  box-shadow:inset 4px 4px 7px rgba(255,255,255,.98),inset -6px -7px 9px rgba(60,115,155,.25),0 5px 8px rgba(20,65,110,.28)!important;
+}
+.main-card-grid .bingo-ball.marked,.live-cards-grid .bingo-ball.marked,.showcase-card-grid .bingo-ball.marked{
+  background:radial-gradient(circle at 28% 20%,#ffb6ef,#ff49ca 32%,#e817a8 58%,#85007f 100%)!important;
+  border-color:#ff9be5!important;color:#fff!important;
+  box-shadow:inset 4px 4px 7px rgba(255,255,255,.58),inset -6px -7px 9px rgba(92,0,91,.35),0 6px 10px rgba(95,0,88,.32)!important;
+}
+
+/* Bottom navigation: same blue bevel as the card headers. */
+.compact-nav{
+  position:relative!important;z-index:10!important;
+  background:linear-gradient(180deg,#1595ec,#075ab7)!important;
+  border-top:4px solid rgba(255,255,255,.75)!important;
+  box-shadow:0 -8px 22px rgba(0,55,120,.22),inset 0 3px 0 rgba(255,255,255,.28)!important;
+}
+.compact-nav button{color:#fff!important;text-shadow:0 2px 0 rgba(0,55,120,.2)!important;}
+
+/* Prevent mobile scroll/repaint artefacts from transforms and animated card effects. */
+@media(max-width:760px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden!important;}
+  .compact-header{padding:16px 10px 14px!important;}
+  .compact-brand{gap:10px!important;}
+  .compact-balls{width:108px!important;height:92px!important;flex-basis:108px!important;}
+  .compact-ball{width:54px!important;height:54px!important;font-size:1.45rem!important;}
+  .compact-ball:nth-child(2),.compact-ball:nth-child(4){left:50px!important;}
+  .compact-ball:nth-child(3),.compact-ball:nth-child(4){top:42px!important;}
+  .compact-logo{font-size:2.35rem!important;}
+  .compact-tag{font-size:.58rem!important;padding:7px 11px!important;margin-top:10px!important;}
+  .compact-room-grid{grid-template-columns:1fr!important;}
+  .compact-room,.live-section,.live-cards-grid,.live-card-wrap{transform:none!important;}
+  .live-cards-grid .bingo-card-frame,.live-cards-grid .bingo-card,.live-cards-grid .bingo-cell-wrap,.live-cards-grid .bingo-ball{transform:none!important;}
+  .live-cards-grid .bingo-card-frame:hover{transform:none!important;}
+  .compact-room,.compact-ball,.compact-tag,.compact-countdown-time,.live-cards-grid .bingo-ball{animation:none!important;transition:none!important;}
+}
+@media(max-width:430px){
+  .compact-brand{gap:7px!important;}
+  .compact-balls{width:92px!important;height:80px!important;flex-basis:92px!important;}
+  .compact-ball{width:46px!important;height:46px!important;font-size:1.22rem!important;border-width:3px!important;}
+  .compact-ball:nth-child(2),.compact-ball:nth-child(4){left:43px!important;}
+  .compact-ball:nth-child(3),.compact-ball:nth-child(4){top:35px!important;}
+  .compact-logo{font-size:2rem!important;}
+  .compact-tag{font-size:.52rem!important;padding:6px 9px!important;}
+  .compact-stats{border-radius:21px!important;padding:8px!important;}
+}
+</style>
+
 </head>
 <body>
 
