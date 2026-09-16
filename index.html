@@ -891,6 +891,95 @@ html, body {
 }
 
 </style>
+
+<style id="bonus-bingo-artistic-3d-final">
+/* ===== BONUS BINGO — ARTISTIC 3D PLAYER FINISH ===== */
+.compact-lobby{
+  position:relative!important;
+  isolation:isolate!important;
+  background:
+    radial-gradient(circle at 8% 8%,rgba(255,255,255,.72) 0 3px,transparent 4px),
+    radial-gradient(circle at 92% 16%,rgba(255,255,255,.65) 0 4px,transparent 5px),
+    radial-gradient(circle at 18% 48%,rgba(255,255,255,.35) 0 2px,transparent 3px),
+    radial-gradient(circle at 82% 62%,rgba(255,255,255,.4) 0 3px,transparent 4px),
+    radial-gradient(circle at 50% 12%,rgba(255,255,255,.28),transparent 28%),
+    linear-gradient(135deg,#04b9e8 0%,#13d6ee 30%,#28b9f1 58%,#6cdef4 78%,#dff9ff 100%)!important;
+}
+.compact-lobby::before,
+.compact-lobby::after{
+  content:"";position:absolute;pointer-events:none;z-index:-1;border-radius:50%;
+  filter:blur(1px);
+}
+.compact-lobby::before{
+  width:240px;height:240px;left:-100px;top:220px;
+  background:
+    radial-gradient(circle at 35% 35%,rgba(255,255,255,.5) 0 8%,transparent 9%),
+    radial-gradient(circle at 70% 62%,rgba(255,64,188,.22) 0 18%,transparent 19%),
+    radial-gradient(circle,rgba(0,117,232,.2),transparent 68%);
+  box-shadow:80px 90px 0 -35px rgba(255,206,37,.16),170px -80px 0 -60px rgba(255,255,255,.3);
+}
+.compact-lobby::after{
+  width:310px;height:310px;right:-145px;top:720px;
+  background:
+    radial-gradient(circle at 32% 28%,rgba(255,255,255,.55) 0 7%,transparent 8%),
+    radial-gradient(circle at 64% 66%,rgba(255,23,171,.2) 0 22%,transparent 23%),
+    radial-gradient(circle,rgba(0,103,217,.16),transparent 67%);
+}
+.compact-header,.compact-section,.live-section,.compact-nav{position:relative;z-index:1}
+.compact-header{
+  background:
+    radial-gradient(circle at 88% 22%,rgba(255,255,255,.32),transparent 20%),
+    linear-gradient(145deg,rgba(255,255,255,.1),rgba(0,120,210,.08));
+  box-shadow:0 12px 30px rgba(0,69,145,.22),inset 0 -5px 0 rgba(255,255,255,.2),inset 0 2px 0 rgba(255,255,255,.32)!important;
+}
+.compact-brand{filter:drop-shadow(0 8px 12px rgba(0,65,130,.16));}
+.compact-balls{filter:drop-shadow(0 12px 14px rgba(0,64,125,.2));}
+.compact-ball{border:3px solid rgba(255,255,255,.7)!important;box-shadow:inset 5px 5px 7px rgba(255,255,255,.8),inset -8px -9px 12px rgba(0,0,0,.18),0 7px 13px rgba(0,65,125,.25)!important;}
+.compact-logo{letter-spacing:-.045em;text-shadow:0 3px 0 rgba(0,63,126,.25),0 7px 14px rgba(0,63,126,.18);}
+.compact-tag{box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 5px 0 #07519a,0 9px 15px rgba(0,50,120,.2)!important;}
+.compact-countdown{box-shadow:inset 0 3px 0 rgba(255,255,255,.9),0 13px 24px rgba(0,68,140,.2)!important;}
+.compact-countdown-time{box-shadow:inset 0 4px 0 rgba(255,255,255,.3),inset 0 -7px 0 rgba(122,0,104,.16),0 8px 0 rgba(132,0,101,.25),0 14px 22px rgba(83,0,94,.16)!important;}
+.compact-stats{box-shadow:inset 0 3px 0 rgba(255,255,255,.95),0 12px 22px rgba(0,68,140,.18)!important;}
+.compact-stats div{position:relative;}
+.compact-stats div::before{content:"";position:absolute;left:50%;top:8px;width:34px;height:5px;border-radius:99px;transform:translateX(-50%);background:linear-gradient(90deg,#ff2da9,#ffc928,#19d676,#1fa7ff);opacity:.7;filter:blur(.2px);}
+
+/* Colourful B-I-N-G-O lettering — the five-letter structure stays unchanged. */
+.main-card-grid .bingo-letter:nth-child(1),.live-cards-grid .bingo-letter:nth-child(1),.showcase-card-grid .bingo-letter:nth-child(1){background:linear-gradient(180deg,#ff6b78 0%,#f3264f 48%,#c70d31 100%)!important;color:#fff!important;}
+.main-card-grid .bingo-letter:nth-child(2),.live-cards-grid .bingo-letter:nth-child(2),.showcase-card-grid .bingo-letter:nth-child(2){background:linear-gradient(180deg,#ffc45a 0%,#ff8b16 48%,#e35b00 100%)!important;color:#fff!important;}
+.main-card-grid .bingo-letter:nth-child(3),.live-cards-grid .bingo-letter:nth-child(3),.showcase-card-grid .bingo-letter:nth-child(3){background:linear-gradient(180deg,#fff36d 0%,#ffd21b 48%,#e5a800 100%)!important;color:#14366d!important;text-shadow:0 2px 0 rgba(255,255,255,.4)!important;}
+.main-card-grid .bingo-letter:nth-child(4),.live-cards-grid .bingo-letter:nth-child(4),.showcase-card-grid .bingo-letter:nth-child(4){background:linear-gradient(180deg,#61f58a 0%,#16c960 48%,#079247 100%)!important;color:#fff!important;}
+.main-card-grid .bingo-letter:nth-child(5),.live-cards-grid .bingo-letter:nth-child(5),.showcase-card-grid .bingo-letter:nth-child(5){background:linear-gradient(180deg,#64dcff 0%,#1ba5f4 48%,#0866c7 100%)!important;color:#fff!important;}
+.main-card-grid .bingo-letter,.live-cards-grid .bingo-letter,.showcase-card-grid .bingo-letter{
+  border:2px solid rgba(255,255,255,.82)!important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.6),inset 0 -4px 5px rgba(0,45,110,.2),0 6px 9px rgba(13,64,122,.25)!important;
+}
+
+/* More artistic room cards without changing their content or bingo mechanics. */
+.compact-room{position:relative!important;overflow:hidden!important;border:3px solid rgba(255,255,255,.75)!important;box-shadow:0 15px 0 rgba(0,70,140,.15),0 23px 32px rgba(0,62,125,.24),inset 0 4px 0 rgba(255,255,255,.52)!important;}
+.compact-room::after{content:"";position:absolute;right:-28px;bottom:-36px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.32),rgba(255,255,255,0) 68%);pointer-events:none;}
+.compact-room-top{position:relative;z-index:2;}
+.compact-room-name{text-shadow:0 2px 0 rgba(0,53,120,.12);}
+.compact-room-info{position:relative;z-index:2;backdrop-filter:blur(4px);}
+.compact-join{position:relative;z-index:2;}
+
+/* Live cards: preserve the 90-ball layout but remove the transforms that can
+   produce repaint/scroll artefacts on mobile browsers. */
+.live-section{contain:layout paint;transform:translateZ(0);backface-visibility:hidden;}
+.live-cards-grid{contain:layout paint;}
+.live-card-wrap{contain:layout paint;}
+.live-cards-grid .bingo-card-frame{backface-visibility:hidden;}
+@media(max-width:760px){
+  .live-cards-grid .bingo-card-frame,
+  .live-cards-grid .bingo-card,
+  .live-cards-grid .bingo-cell-wrap,
+  .live-cards-grid .bingo-ball{transform:none!important;}
+  .live-cards-grid .bingo-ball.marked{animation:none!important;}
+  .live-call-ball.latest{animation:none!important;}
+}
+@media(prefers-reduced-motion:reduce){
+  .compact-room,.compact-ball,.compact-tag,.compact-countdown-time{transition:none!important;animation:none!important;}
+}
+</style>
 </head>
 <body>
 
@@ -1867,18 +1956,24 @@ function ensureAutoCallLoop(roomId){
    calling loop running. This is what makes the whole thing work without
    a real backend. */
 setInterval(async () => {
+  /* IMPORTANT: do not rebuild the entire lobby every second. Replacing
+     innerHTML while the player is scrolling caused the live-card section
+     to jump/glitch on phones. Countdown text is updated in-place instead. */
+  tickCountdowns();
+  let lobbyChanged = false;
   for(const room of roomsCache){
     const game = gamesCache[room.id];
     if(!game) continue;
 
     if(game.status === 'scheduled' && game.scheduled_start && Date.now() >= new Date(game.scheduled_start).getTime()){
       await advanceGame(room.id, false);
+      lobbyChanged = true;
     }
     if(game.status === 'active' && isAdmin && game.auto_call !== false){
       ensureAutoCallLoop(room.id);
     }
   }
-  renderRooms();
+  if(lobbyChanged) renderRooms();
 }, 1000);
 
 /* ============ PLAYER: BUY CARDS ============ */
