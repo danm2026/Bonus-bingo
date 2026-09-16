@@ -1484,41 +1484,19 @@ body{font-synthesis:none}
 }
 @keyframes bbBgFloat{ 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-16px) scale(1.015)} }
 
-/* ===== Thin hand-drawn pen marks over called numbers (replaces solid filled ball + star) ===== */
-.main-card-grid .bingo-ball.marked,
-.showcase-card-grid .bingo-ball.marked{
-  background:radial-gradient(circle at 32% 25%,#fff 0%,#fff 38%,#fff7ea 72%,#ffe9d2 100%)!important;
-  border-color:rgba(90,135,180,.32)!important;
-  color:var(--text)!important;
-  font-size:1rem!important;
-  box-shadow:0 4px 6px rgba(40,80,120,.22),inset 0 2px 3px rgba(255,255,255,.95)!important;
-  position:relative!important;
+/* Marked-number lines have been removed above, so numbers now fall back to
+   the original glossy pink 3D "marked" ball + star styling already defined
+   earlier in this stylesheet — no redefinition needed here. */
+
+/* ===== "Last ball" strip: wrap into a grid of balls instead of one scrolling row ===== */
+.live-call-strip{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  overflow:visible!important;
+  row-gap:8px!important;
 }
-.live-cards-grid .bingo-ball.marked{
-  background:radial-gradient(circle at 32% 25%,#fff 0%,#fff 40%,#fff7ea 75%,#ffe9d2 100%)!important;
-  border-color:rgba(90,135,180,.35)!important;
-  color:var(--text)!important;
-  font-size:.85rem!important;
-  box-shadow:0 3px 5px rgba(40,80,120,.25),inset 0 2px 3px rgba(255,255,255,.95)!important;
-  position:relative!important;
-}
-.main-card-grid .bingo-ball.marked::after,
-.live-cards-grid .bingo-ball.marked::after,
-.showcase-card-grid .bingo-ball.marked::after{
-  content:""!important;
-  position:absolute!important;
-  inset:-12%!important;
-  font-size:0!important;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M15,20 C35,55 40,15 62,50 C74,68 80,50 88,80' stroke='%2317284d' stroke-width='7' fill='none' stroke-linecap='round'/><path d='M85,18 C65,52 58,12 38,48 C26,68 20,50 12,82' stroke='%23e8127e' stroke-width='6' fill='none' stroke-linecap='round' opacity='0.85'/></svg>")!important;
-  background-repeat:no-repeat!important;
-  background-size:100% 100%!important;
-  transform:rotate(-4deg)!important;
-  mix-blend-mode:multiply!important;
-  pointer-events:none!important;
-  text-shadow:none!important;
-}
-.bingo-row:nth-child(2n) .bingo-ball.marked::after{transform:rotate(5deg)!important}
-.bingo-row:nth-child(3n) .bingo-ball.marked::after{transform:rotate(-8deg)!important}
+.live-call-label{flex:0 0 100%!important;margin-bottom:2px!important}
+.live-call-ball{flex:0 0 auto!important}
 </style>
 </head>
 <body>
@@ -3120,7 +3098,7 @@ function renderRooms(){
       <div class="bb-scene-art" aria-hidden="true"><i class="bb-art-ball bb-art-90">90</i><i class="bb-art-ball bb-art-21">21</i><i class="bb-art-ball bb-art-33">33</i><i class="bb-art-ball bb-art-65">65</i><i class="bb-art-ticket">B I N G O</i><i class="bb-art-star">★</i><i class="bb-art-star bb-art-star-2">★</i></div>
       <header class="compact-header">
         <div class="compact-brand"><div class="compact-balls"><div class="compact-ball">9</div><div class="compact-ball">17</div><div class="compact-ball">26</div><div class="compact-ball">29</div></div><div><div class="compact-logo">BONUS<br><span>BINGO</span></div><div class="compact-tag">★ PLAY ★ WIN ★ SMILE ★</div></div></div>
-        <div class="compact-countdown"><div class="compact-countdown-label">NEXT GAME STARTS IN</div><div class="compact-countdown-time">${allRooms.length && allRooms.some(r=>gamesCache[r.id]?.scheduled_start) ? timeRemainingLabel((allRooms.map(r=>gamesCache[r.id]).filter(g=>g?.scheduled_start).sort((a,b)=>new Date(a.scheduled_start)-new Date(b.scheduled_start))[0]||{}).scheduled_start) : 'TBA'}</div><span class="compact-countdown-note">◷ CARD SALES CLOSE — FINAL 60 SECONDS</span></div>
+        <div class="compact-countdown">${(()=>{ const nextGame = allRooms.map(r=>gamesCache[r.id]).filter(g=>g?.scheduled_start).sort((a,b)=>new Date(a.scheduled_start)-new Date(b.scheduled_start))[0]; return `<div class="compact-countdown-label">NEXT GAME STARTS IN</div><div class="compact-countdown-time" data-countdown-for="${nextGame ? nextGame.id : ''}" data-scheduled="${nextGame ? nextGame.scheduled_start : ''}">${nextGame ? timeRemainingLabel(nextGame.scheduled_start) : 'TBA'}</div>`; })()}<span class="compact-countdown-note">◷ CARD SALES CLOSE — FINAL 60 SECONDS</span></div>
         <div class="compact-stats"><div><span>👥 Players Online</span><strong>${onlineCount}</strong></div><div><span>🎟️ Your Tickets</span><strong>${myCardsAcrossAllRooms().length}</strong></div><div><span>🏆 1 Line</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_one||0)))) : '£0.00'}</strong></div><div><span>🏆 2 Lines</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_two||0)))) : '£0.00'}</strong></div><div><span>🏆 Full House</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_full||0)))) : '£0.00'}</strong></div></div>
       </header>
       <div class="compact-section"><h2 class="compact-section-title">🎯 PLAYING ROOMS</h2><div class="compact-room-grid">${allRooms.length ? allRooms.map(renderCompactRoomCard).join('') : '<div class="compact-empty">No games are currently available.</div>'}</div></div>
