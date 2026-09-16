@@ -226,6 +226,27 @@ input,select{ border:1px solid var(--border); border-radius:8px; padding:10px; b
 }
 .winner-banner h3{ margin:0 0 6px; font-size:1.1rem; }
 .winner-banner .amount{ font-size:1.6rem; font-weight:900; }
+/* LIVE PRIZE PANEL + WINNER FIREWORK CELEBRATION */
+.live-prize-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:8px}
+.live-prize-box{background:linear-gradient(145deg,#ffffff,#eafaff);border:2px solid #bfeaf7;border-radius:12px;padding:7px 5px;text-align:center;box-shadow:inset 0 2px 0 rgba(255,255,255,.9),0 4px 8px rgba(0,80,120,.12);min-width:0}
+.live-prize-box small{display:block;color:#153e87;font-size:.62rem;font-weight:1000;line-height:1.05;text-transform:uppercase}
+.live-prize-box strong{display:block;color:#078a4c;font-size:1rem;font-weight:1000;margin-top:3px}
+.live-prize-panel.compact{grid-template-columns:1fr;gap:5px;margin-top:0}
+.live-prize-panel.compact .live-prize-box{display:flex;justify-content:space-between;align-items:center;padding:6px 8px}
+.live-prize-panel.compact .live-prize-box small{font-size:.66rem}
+.live-prize-panel.compact .live-prize-box strong{margin:0;font-size:.9rem}
+.main-header-prizes{grid-column:span 1;min-width:220px}
+.main-header-prizes .main-header-prizes-title{font-size:.68rem;font-weight:1000;color:#153e87;text-transform:uppercase;margin-bottom:3px}
+.win-firework-host{position:fixed;inset:0;z-index:9998;pointer-events:none;overflow:hidden}
+.win-firework-burst{position:absolute;left:50%;top:42%;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 14px 4px rgba(255,255,255,.95);animation:winBurst .95s ease-out forwards}
+.win-firework-burst::before,.win-firework-burst::after{content:"";position:absolute;inset:-55px;border-radius:50%;background:conic-gradient(from 0deg,#ff2f92,#ffd43b,#2ee6a6,#32a8ff,#b66cff,#ff2f92);-webkit-mask:radial-gradient(circle,transparent 0 54%,#000 55% 57%,transparent 58%);mask:radial-gradient(circle,transparent 0 54%,#000 55% 57%,transparent 58%);animation:winRing .95s ease-out forwards}
+.win-firework-label{position:absolute;left:50%;top:57%;transform:translate(-50%,-50%) scale(.8);background:linear-gradient(135deg,#ff2f9d,#9b2cff);color:#fff;border:3px solid #fff;border-radius:18px;padding:12px 18px;text-align:center;font-weight:1000;box-shadow:0 10px 30px rgba(120,0,160,.35),inset 0 2px 0 rgba(255,255,255,.35);animation:winLabel .45s cubic-bezier(.2,.8,.2,1) forwards;min-width:230px}
+.win-firework-label small{display:block;font-size:.72rem;letter-spacing:.06em}.win-firework-label strong{display:block;font-size:1.15rem;margin:2px 0}.win-firework-label span{display:block;font-size:1.45rem;color:#fff27a}
+@keyframes winBurst{0%{transform:scale(.5);opacity:1}100%{transform:scale(1.2);opacity:0}}
+@keyframes winRing{0%{transform:scale(.1);opacity:1}100%{transform:scale(1.35);opacity:0}}
+@keyframes winLabel{to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@media(max-width:760px){.live-prize-panel{gap:5px}.live-prize-box{padding:6px 3px}.live-prize-box strong{font-size:.9rem}.main-header-prizes{min-width:0}.win-firework-label{min-width:210px;top:58%}}
+
 
 .admin{ display:none; background:linear-gradient(180deg,#f7fdff,#effcff); border:2px solid #a8e5f5; border-radius:20px; padding:16px; margin-bottom:18px; box-shadow:0 12px 28px rgba(26,120,160,.12); }
 .admin h4{color:#123f86;margin:14px 0 8px}
@@ -714,6 +735,128 @@ html, body {
 .footer-admin { display: none !important; }
 </style>
 
+
+<style id="bonus-3d-card-upgrade">
+/* ===== BONUS BINGO — DEEP 3D CARD UPGRADE =====
+   Visual-only: preserves the existing bingo card grid, numbers and gameplay. */
+.main-card-grid,
+.live-cards-grid,
+.showcase-card-grid{perspective:1400px;perspective-origin:50% 45%;}
+
+.main-card-grid .bingo-card-frame,
+.live-cards-grid .bingo-card-frame,
+.showcase-card-grid .bingo-card-frame{
+  position:relative!important;
+  isolation:isolate;
+  transform-style:preserve-3d;
+  border-radius:28px!important;
+  padding:12px!important;
+  border:3px solid rgba(255,255,255,.82)!important;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.92),rgba(123,218,255,.72) 42%,rgba(0,93,174,.9)) padding-box,
+    linear-gradient(145deg,#fff,#19bce9 48%,#064f9c) border-box;
+  box-shadow:
+    0 28px 42px rgba(4,58,116,.30),
+    0 12px 0 rgba(0,62,128,.18),
+    0 4px 0 rgba(255,255,255,.95) inset,
+    0 -7px 12px rgba(0,35,88,.20) inset,
+    0 0 0 1px rgba(0,80,150,.18);
+  transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
+}
+.main-card-grid .bingo-card-frame:hover,
+.live-cards-grid .bingo-card-frame:hover,
+.showcase-card-grid .bingo-card-frame:hover{
+  transform:translateY(-8px) rotateX(2deg) rotateY(-1deg) scale(1.012)!important;
+  box-shadow:0 36px 52px rgba(4,58,116,.34),0 15px 0 rgba(0,62,128,.18),0 4px 0 rgba(255,255,255,.95) inset,0 -8px 14px rgba(0,35,88,.22) inset;
+  filter:saturate(1.05);
+}
+.main-card-grid .bingo-card-frame:before,
+.live-cards-grid .bingo-card-frame:before,
+.showcase-card-grid .bingo-card-frame:before{
+  content:'';position:absolute;left:9%;right:9%;top:-9px;height:24px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,255,255,.8),rgba(255,255,255,0));
+  filter:blur(2px);transform:translateZ(18px);pointer-events:none;
+}
+.main-card-grid .bingo-card-frame:after,
+.live-cards-grid .bingo-card-frame:after,
+.showcase-card-grid .bingo-card-frame:after{
+  content:'';position:absolute;inset:7px;border-radius:21px;border:1px solid rgba(255,255,255,.5);
+  box-shadow:inset 0 0 0 2px rgba(0,99,178,.12);pointer-events:none;z-index:3;
+}
+
+.main-card-grid .bingo-card,
+.live-cards-grid .bingo-card,
+.showcase-card-grid .bingo-card{
+  position:relative;z-index:2;
+  transform:translateZ(12px);
+  border-radius:21px!important;
+  border:2px solid rgba(111,191,229,.45)!important;
+  background:linear-gradient(180deg,#fff 0%,#fafdff 48%,#e4f4ff 100%)!important;
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,.98),
+    inset 0 -5px 10px rgba(33,100,151,.12),
+    0 5px 10px rgba(28,78,125,.16);
+}
+
+/* Keep the familiar 90-ball bingo structure exactly as it is, but give each layer depth. */
+.main-card-grid .bingo-letter,
+.live-cards-grid .bingo-letter,
+.showcase-card-grid .bingo-letter{
+  position:relative;transform:translateZ(10px);
+  background:linear-gradient(180deg,#45d6ff 0%,#1599ed 48%,#0866c5 100%)!important;
+  border:2px solid rgba(255,255,255,.78)!important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.58),inset 0 -4px 5px rgba(0,55,125,.22),0 5px 7px rgba(21,72,123,.25)!important;
+  text-shadow:0 2px 0 rgba(0,61,130,.35);
+}
+.main-card-grid .bingo-grid-lines,
+.live-cards-grid .bingo-grid-lines,
+.showcase-card-grid .bingo-grid-lines{
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -5px 8px rgba(50,110,155,.13),0 4px 7px rgba(30,75,120,.10);
+}
+.main-card-grid .bingo-cell-wrap,
+.live-cards-grid .bingo-cell-wrap,
+.showcase-card-grid .bingo-cell-wrap{transform-style:preserve-3d;}
+.main-card-grid .bingo-ball,
+.live-cards-grid .bingo-ball,
+.showcase-card-grid .bingo-ball{
+  position:relative;transform:translateZ(14px);
+  border-width:2px!important;
+  background:radial-gradient(circle at 29% 20%,#fff 0%,#fff 27%,#eef8ff 58%,#b9d4e9 100%)!important;
+  box-shadow:
+    inset 4px 4px 6px rgba(255,255,255,.95),
+    inset -5px -6px 8px rgba(73,120,160,.28),
+    0 5px 7px rgba(24,67,110,.28),
+    0 1px 0 rgba(255,255,255,.9);
+}
+.main-card-grid .bingo-ball.marked,
+.live-cards-grid .bingo-ball.marked,
+.showcase-card-grid .bingo-ball.marked{
+  background:radial-gradient(circle at 28% 20%,#ffb5f2 0%,#ff4dcb 30%,#e91aa9 58%,#8b008c 100%)!important;
+  border-color:#ff9be5!important;
+  box-shadow:inset 4px 4px 7px rgba(255,255,255,.58),inset -6px -7px 9px rgba(92,0,91,.35),0 6px 9px rgba(95,0,88,.32)!important;
+}
+
+/* A glassy highlight makes the cards read as raised plastic rather than flat CSS boxes. */
+.main-card-grid .bingo-card:before,
+.live-cards-grid .bingo-card:before,
+.showcase-card-grid .bingo-card:before{
+  content:'';position:absolute;left:8%;right:8%;top:7px;height:24%;border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,0));
+  pointer-events:none;opacity:.65;
+}
+
+/* Do not change the mobile bingo format; only deepen the visual treatment. */
+@media(max-width:760px){
+  .main-card-grid .bingo-card-frame:hover,
+  .live-cards-grid .bingo-card-frame:hover,
+  .showcase-card-grid .bingo-card-frame:hover{transform:none!important;}
+}
+@media(prefers-reduced-motion:reduce){
+  .main-card-grid .bingo-card-frame,
+  .live-cards-grid .bingo-card-frame,
+  .showcase-card-grid .bingo-card-frame{transition:none!important;}
+}
+</style>
 </head>
 <body>
 
@@ -1165,6 +1308,7 @@ function announceWins(newWins){
     const amountPart = each > 0 ? (names.length > 1 ? `${formatMoney(each)} each` : formatMoney(each)) : '';
     const verb = wins.length>1||names.length>1?'win':'wins';
     showWinToast(`🎉 ${TIER_LABELS[tier] || tier.toUpperCase()}! ${escapeHtml(namePart)} ${verb}${amountPart ? ' '+amountPart : '!'}`, tier);
+    showWinnerFirework(wins, tier);
   });
 }
 
@@ -1877,6 +2021,35 @@ function renderCalledBoard(calledSet){
   return `<div class="called-board">${cells}</div>`;
 }
 
+
+function renderLivePrizePanel(game, mode='paid', compact=false){
+  const p1 = mode === 'paid' ? formatMoney(Number(game?.pot_one || 0)) : 'FREE';
+  const p2 = mode === 'paid' ? formatMoney(Number(game?.pot_two || 0)) : 'FREE';
+  const pf = mode === 'paid' ? formatMoney(Number(game?.pot_full || 0)) : 'FREE';
+  return `<div class="live-prize-panel${compact ? ' compact' : ''}" aria-label="Live prize amounts">
+    <div class="live-prize-box"><small>1 Line</small><strong>${p1}</strong></div>
+    <div class="live-prize-box"><small>2 Lines</small><strong>${p2}</strong></div>
+    <div class="live-prize-box"><small>Full House</small><strong>${pf}</strong></div>
+  </div>`;
+}
+
+function showWinnerFirework(wins, tier){
+  if(!wins || !wins.length) return;
+  const names = [...new Set(wins.map(w => w.player_name || 'A player'))];
+  const name = names.length === 1 ? names[0] : `${names.slice(0,-1).join(', ')} & ${names[names.length-1]}`;
+  const amount = wins[0].payout > 0 ? (names.length > 1 ? `${formatMoney(wins[0].payout)} each` : formatMoney(wins[0].payout)) : 'Prize won';
+  const host = document.createElement('div');
+  host.className = 'win-firework-host';
+  const burst = document.createElement('div');
+  burst.className = 'win-firework-burst';
+  const label = document.createElement('div');
+  label.className = 'win-firework-label';
+  label.innerHTML = `<small>🎉 WINNER</small><strong>${escapeHtml(name)}</strong><span>${escapeHtml(TIER_LABELS[tier] || tier.toUpperCase())} • ${escapeHtml(amount)}</span>`;
+  host.append(burst,label);
+  document.body.appendChild(host);
+  setTimeout(()=>host.remove(),5000);
+}
+
 function renderRoomCard(room){
   const game = gamesCache[room.id];
   if(!game) return '';
@@ -1914,14 +2087,14 @@ function renderRoomCard(room){
     <div class="main-winner-panel">
       <div class="main-winner-title">🏆 WINNER!</div>
       <div class="main-winner-ball">7</div>
-      <div class="main-full-house">FULL HOUSE!</div>
+      <div class="main-full-house">${escapeHtml(TIER_LABELS[winner.tier] || tierLabel(winner.tier))}</div>
       <div class="main-winner-copy">Congratulations to<br><strong>${escapeHtml(winner.player_name)}</strong><br><span>${room.mode === 'free' ? '🏅 Bragging rights!' : 'You\'ve won ' + formatMoney(winner.payout) + '!'}</span></div>
-      <button class="main-green-btn" onclick="switchTab('paid')">🏆 VIEW WINNERS</button>
+      <button class="main-green-btn" onclick="openWinnersModal()">🏆 VIEW WINNERS</button>
     </div>` : `
     <div class="main-winner-panel main-winner-placeholder">
       <div class="main-winner-title">🏆 WINNER!</div>
       <div class="main-winner-ball">7</div>
-      <div class="main-full-house">FULL HOUSE!</div>
+      <div class="main-full-house">WINNERS</div>
       <div class="main-winner-copy">Winner announcements<br>will appear here.</div>
     </div>`;
 
@@ -1952,7 +2125,7 @@ function renderRoomCard(room){
         <div class="main-stats">
           <div>👥 <span>Players Online</span><strong class="js-online-count">${onlineCount}</strong></div>
           <div>🎟️ <span>Your Tickets</span><strong>${myCards.length}</strong></div>
-          <div>👑 <span>Jackpot</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_full) : '£250'}</strong></div>
+          <div class="main-header-prizes"><div class="main-header-prizes-title">🏆 Prizes To Win</div>${renderLivePrizePanel(game, room.mode)}</div>
         </div>
         <div class="main-prizes-slogan">Big Prizes<br><span>Real Wins!</span></div>
       </header>
@@ -1973,8 +2146,9 @@ function renderRoomCard(room){
           <div class="main-side-panel main-prize-panel">
             <div class="main-side-row">👥 <span>Players Online</span><strong class="js-online-count">${onlineCount}</strong></div>
             <div class="main-side-row">🎟️ <span>Your Tickets</span><strong>${myCards.length}</strong></div>
-            <div class="main-side-row">👑 <span>Jackpot</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_full) : '£250'}</strong></div>
-            <button class="main-green-btn" onclick="openWinnersModal()">🏆 VIEW PRIZES</button>
+            <div class="main-side-title">🏆 PRIZES TO WIN</div>
+            ${renderLivePrizePanel(game, room.mode, true)}
+            <button class="main-green-btn" onclick="openWinnersModal()">🏆 VIEW WINNERS</button>
           </div>
           ${winnerPanel}
         </aside>
@@ -2050,7 +2224,7 @@ function renderGameChooser(){
       <div class="gc-name">${escapeHtml(room.name)}</div>
       <div class="gc-row"><span>Starts</span><strong>${start}</strong></div>
       <div class="gc-row"><span>${room.mode === 'paid' ? 'Entry' : 'Prize'}</span><strong>${room.mode === 'paid' ? formatMoney(room.entry_fee) + '/card' : jackpot}</strong></div>
-      ${room.mode === 'paid' ? `<div class="gc-row"><span>Jackpot</span><strong>${jackpot}</strong></div>` : ''}
+      ${room.mode === 'paid' ? `<div class="gc-row"><span>1 Line</span><strong>${formatMoney(game?.pot_one || 0)}</strong></div><div class="gc-row"><span>2 Lines</span><strong>${formatMoney(game?.pot_two || 0)}</strong></div><div class="gc-row"><span>Full House</span><strong>${formatMoney(game?.pot_full || 0)}</strong></div>` : ''}
     </div>`;
   }).join('');
   mount.innerHTML = `<div class="game-chooser-row">${cards}</div>`;
@@ -2149,7 +2323,7 @@ function renderCompactRoomCard(room){
   const status = game.status === 'active' ? `LIVE • ${calledArr.length}/90` : `STARTS ${start}`;
   return `<article class="compact-room" id="room-anchor-${room.id}" style="--room-from:${palette[0]};--room-to:${palette[1]}">
     <div class="compact-room-top"><div class="compact-room-ball">${ballNum}</div><div><div class="compact-room-name">${escapeHtml(room.name)}</div><div class="compact-room-mode">${room.mode === 'paid' ? '💷 PAID GAME' : '🎉 FREE BINGO'}</div></div></div>
-    <div class="compact-room-info"><div><span>Game</span><strong>${status}</strong></div><div><span>${room.mode === 'paid' ? 'Jackpot' : 'Players'}</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_full || 0) : uniquePlayerCount}</strong></div><div><span>${room.mode === 'paid' ? 'Players' : 'Cards Sold'}</span><strong>${room.mode === 'paid' ? uniquePlayerCount : roomCards.length}</strong></div><div><span>Your Cards</span><strong>${myCards.length}</strong></div></div>
+    <div class="compact-room-info"><div><span>Game</span><strong>${status}</strong></div><div><span>1 Line</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_one || 0) : 'FREE'}</strong></div><div><span>2 Lines</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_two || 0) : 'FREE'}</strong></div><div><span>Full House</span><strong>${room.mode === 'paid' ? formatMoney(game.pot_full || 0) : 'FREE'}</strong></div><div><span>Players</span><strong>${uniquePlayerCount}</strong></div><div><span>Your Cards</span><strong>${myCards.length}</strong></div></div>
     <button class="compact-join" onclick="${game.status === 'active' ? `jumpToRoom('${room.id}')` : `openCompactBuy('${room.id}')`}">${game.status === 'active' ? 'VIEW LIVE GAME' : (room.mode === 'paid' ? 'BUY CARD(S)' : 'GET CARD(S)')}</button>
   </article>`;
 }
@@ -2248,7 +2422,7 @@ function renderRooms(){
       <header class="compact-header">
         <div class="compact-brand"><div class="compact-balls"><div class="compact-ball">9</div><div class="compact-ball">17</div><div class="compact-ball">26</div><div class="compact-ball">29</div></div><div><div class="compact-logo">BONUS<br><span>BINGO</span></div><div class="compact-tag">★ PLAY ★ WIN ★ SMILE ★</div></div></div>
         <div class="compact-countdown"><div class="compact-countdown-label">NEXT GAME STARTS IN</div><div class="compact-countdown-time">${allRooms.length && allRooms.some(r=>gamesCache[r.id]?.scheduled_start) ? timeRemainingLabel((allRooms.map(r=>gamesCache[r.id]).filter(g=>g?.scheduled_start).sort((a,b)=>new Date(a.scheduled_start)-new Date(b.scheduled_start))[0]||{}).scheduled_start) : 'TBA'}</div><span class="compact-countdown-note">◷ CARD SALES CLOSE — FINAL 60 SECONDS</span></div>
-        <div class="compact-stats"><div><span>👥 Players Online</span><strong>${onlineCount}</strong></div><div><span>🎟️ Your Tickets</span><strong>${myCardsAcrossAllRooms().length}</strong></div><div><span>👑 Jackpot</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_full||0)))) : '£0.00'}</strong></div></div>
+        <div class="compact-stats"><div><span>👥 Players Online</span><strong>${onlineCount}</strong></div><div><span>🎟️ Your Tickets</span><strong>${myCardsAcrossAllRooms().length}</strong></div><div><span>🏆 1 Line</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_one||0)))) : '£0.00'}</strong></div><div><span>🏆 2 Lines</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_two||0)))) : '£0.00'}</strong></div><div><span>🏆 Full House</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_full||0)))) : '£0.00'}</strong></div></div>
       </header>
       <div class="compact-section"><h2 class="compact-section-title">🎯 PLAYING ROOMS</h2><div class="compact-room-grid">${allRooms.length ? allRooms.map(renderCompactRoomCard).join('') : '<div class="compact-empty">No games are currently available.</div>'}</div></div>
       ${renderLivePlayingCards()}
