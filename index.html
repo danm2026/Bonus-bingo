@@ -1497,6 +1497,23 @@ body{font-synthesis:none}
 }
 .live-call-label{flex:0 0 100%!important;margin-bottom:2px!important}
 .live-call-ball{flex:0 0 auto!important}
+
+/* ===== The home/lobby screen paints its own full-viewport background
+   (.compact-lobby) on top of body, which is why the colour change above
+   was invisible there. Overriding it directly here. ===== */
+.compact-lobby{
+  background:
+    radial-gradient(circle at 8% 14%, rgba(255,255,255,.95) 0 5px, rgba(255,60,150,.95) 6px 26px, rgba(150,0,80,.55) 27px 29px, transparent 33px),
+    radial-gradient(circle at 92% 12%, rgba(255,255,255,.95) 0 4px, rgba(20,190,120,.95) 5px 22px, rgba(0,90,50,.55) 23px 25px, transparent 29px),
+    radial-gradient(circle at 10% 62%, rgba(255,255,255,.9) 0 4px, rgba(255,205,20,.95) 5px 24px, rgba(140,90,0,.5) 25px 27px, transparent 31px),
+    radial-gradient(circle at 90% 66%, rgba(255,255,255,.9) 0 4px, rgba(120,70,230,.95) 5px 21px, rgba(50,10,110,.5) 22px 24px, transparent 28px),
+    radial-gradient(ellipse 380px 380px at 4% 10%, rgba(255,45,150,.4), transparent 62%),
+    radial-gradient(ellipse 340px 340px at 96% 8%, rgba(255,205,20,.38), transparent 60%),
+    radial-gradient(ellipse 400px 400px at 6% 78%, rgba(20,190,120,.38), transparent 62%),
+    radial-gradient(ellipse 360px 360px at 94% 82%, rgba(150,60,235,.36), transparent 60%),
+    linear-gradient(160deg,#02b6ee 0%,#12c8ec 22%,#5ddcf2 42%,#eaf9ff 58%,#fff0c8 78%,#ffd3ec 100%)
+    !important;
+}
 </style>
 </head>
 <body>
