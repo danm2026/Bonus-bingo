@@ -1453,6 +1453,73 @@ html,body{background:#05bde8!important;overflow-x:hidden!important} body{font-sy
 @media(max-width:760px){.compact-header{padding:25px 9px 22px!important}.compact-brand{gap:10px!important}.compact-balls{width:108px!important;height:92px!important;flex-basis:108px!important}.compact-ball{width:55px!important;height:55px!important;font-size:1.6rem!important;border-width:4px!important}.compact-ball:nth-child(2),.compact-ball:nth-child(4){left:51px!important}.compact-ball:nth-child(3),.compact-ball:nth-child(4){top:39px!important}.compact-logo{font-size:2.25rem!important}.compact-tag{font-size:.56rem!important;padding:7px 9px!important}.compact-stats{grid-template-columns:repeat(3,1fr)!important}.compact-stats div{min-height:68px!important}.compact-section{padding-top:22px!important}.bb-art-ball{width:78px!important;height:78px!important;font-size:1.7rem!important}.bb-art-90{left:-36px!important;top:340px!important}.bb-art-21{right:-38px!important;top:560px!important}.bb-art-33{left:-38px!important;top:880px!important}.bb-art-65{right:-40px!important;top:1210px!important}.bb-art-ticket{display:flex!important;width:112px!important;height:45px!important;font-size:.62rem!important;right:-5px!important;top:305px!important}.bb-art-star{font-size:2rem!important;left:3%!important;top:285px!important}.bb-art-star-2{font-size:2rem!important;right:3%!important;top:820px!important}}
 @media(max-width:430px){.compact-logo{font-size:1.95rem!important}.compact-balls{width:91px!important;height:78px!important;flex-basis:91px!important}.compact-ball{width:46px!important;height:46px!important;font-size:1.28rem!important}.compact-ball:nth-child(2),.compact-ball:nth-child(4){left:43px!important}.compact-ball:nth-child(3),.compact-ball:nth-child(4){top:33px!important}.compact-brand{gap:7px!important}.compact-stats span{font-size:.57rem!important}.compact-stats strong{font-size:1rem!important}}
 </style>
+
+<style id="colourful-3d-bg-and-pen-marks">
+/* ===== Colourful 3D/4D bingo background with floating balls ===== */
+html,body{
+  background:
+    radial-gradient(ellipse 380px 380px at 4% 14%, rgba(255,45,150,.55), transparent 62%),
+    radial-gradient(ellipse 340px 340px at 96% 10%, rgba(255,205,20,.5), transparent 60%),
+    radial-gradient(ellipse 400px 400px at 8% 88%, rgba(20,190,120,.5), transparent 62%),
+    radial-gradient(ellipse 360px 360px at 94% 90%, rgba(150,60,235,.48), transparent 60%),
+    radial-gradient(ellipse 560px 560px at 50% 48%, rgba(0,205,255,.32), transparent 66%),
+    linear-gradient(160deg,#02b6ee 0%,#12c8ec 20%,#5ddcf2 40%,#eaf9ff 56%,#fff0c8 76%,#ffd3ec 100%)
+    !important;
+  background-attachment:fixed!important;
+  overflow-x:hidden!important;
+}
+body{font-synthesis:none}
+
+/* glossy little 3D bingo balls painted into a fixed backdrop layer behind every screen */
+.app{position:relative}
+.app::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 9% 20%, rgba(255,255,255,.95) 0 5px, rgba(255,60,150,.95) 6px 26px, rgba(150,0,80,.55) 27px 29px, transparent 33px),
+    radial-gradient(circle at 91% 26%, rgba(255,255,255,.95) 0 4px, rgba(20,190,120,.95) 5px 22px, rgba(0,90,50,.55) 23px 25px, transparent 29px),
+    radial-gradient(circle at 14% 74%, rgba(255,255,255,.9) 0 4px, rgba(255,205,20,.95) 5px 24px, rgba(140,90,0,.5) 25px 27px, transparent 31px),
+    radial-gradient(circle at 86% 80%, rgba(255,255,255,.9) 0 4px, rgba(120,70,230,.95) 5px 21px, rgba(50,10,110,.5) 22px 24px, transparent 28px),
+    radial-gradient(circle at 50% 94%, rgba(255,255,255,.88) 0 3px, rgba(0,140,230,.9) 4px 18px, rgba(0,50,100,.5) 19px 21px, transparent 25px);
+  animation:bbBgFloat 16s ease-in-out infinite alternate;
+}
+@keyframes bbBgFloat{ 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-16px) scale(1.015)} }
+
+/* ===== Thin hand-drawn pen marks over called numbers (replaces solid filled ball + star) ===== */
+.main-card-grid .bingo-ball.marked,
+.showcase-card-grid .bingo-ball.marked{
+  background:radial-gradient(circle at 32% 25%,#fff 0%,#fff 38%,#fff7ea 72%,#ffe9d2 100%)!important;
+  border-color:rgba(90,135,180,.32)!important;
+  color:var(--text)!important;
+  font-size:1rem!important;
+  box-shadow:0 4px 6px rgba(40,80,120,.22),inset 0 2px 3px rgba(255,255,255,.95)!important;
+  position:relative!important;
+}
+.live-cards-grid .bingo-ball.marked{
+  background:radial-gradient(circle at 32% 25%,#fff 0%,#fff 40%,#fff7ea 75%,#ffe9d2 100%)!important;
+  border-color:rgba(90,135,180,.35)!important;
+  color:var(--text)!important;
+  font-size:.85rem!important;
+  box-shadow:0 3px 5px rgba(40,80,120,.25),inset 0 2px 3px rgba(255,255,255,.95)!important;
+  position:relative!important;
+}
+.main-card-grid .bingo-ball.marked::after,
+.live-cards-grid .bingo-ball.marked::after,
+.showcase-card-grid .bingo-ball.marked::after{
+  content:""!important;
+  position:absolute!important;
+  inset:-12%!important;
+  font-size:0!important;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M15,20 C35,55 40,15 62,50 C74,68 80,50 88,80' stroke='%2317284d' stroke-width='7' fill='none' stroke-linecap='round'/><path d='M85,18 C65,52 58,12 38,48 C26,68 20,50 12,82' stroke='%23e8127e' stroke-width='6' fill='none' stroke-linecap='round' opacity='0.85'/></svg>")!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%!important;
+  transform:rotate(-4deg)!important;
+  mix-blend-mode:multiply!important;
+  pointer-events:none!important;
+  text-shadow:none!important;
+}
+.bingo-row:nth-child(2n) .bingo-ball.marked::after{transform:rotate(5deg)!important}
+.bingo-row:nth-child(3n) .bingo-ball.marked::after{transform:rotate(-8deg)!important}
+</style>
 </head>
 <body>
 
