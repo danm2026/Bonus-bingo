@@ -856,6 +856,40 @@ html, body {
   .live-cards-grid .bingo-card-frame,
   .showcase-card-grid .bingo-card-frame{transition:none!important;}
 }
+
+
+/* ===== FINAL MOBILE 3D + LIVE PRIZE STABILITY FIX ===== */
+.compact-lobby{isolation:isolate;background:
+  radial-gradient(circle at 12% 18%,rgba(255,255,255,.38),transparent 18%),
+  radial-gradient(circle at 88% 42%,rgba(255,255,255,.25),transparent 20%),
+  linear-gradient(180deg,#04bce9 0%,#19d3ef 35%,#31b9ef 64%,#eefbff 100%)!important;
+}
+.compact-header{box-shadow:0 10px 28px rgba(0,77,150,.22),inset 0 -5px 0 rgba(255,255,255,.22);}
+.compact-stats{transform:translateZ(0);backdrop-filter:blur(5px);}
+.compact-room{transform:translateZ(0);box-shadow:0 14px 0 rgba(0,73,145,.16),0 22px 30px rgba(0,73,145,.24),inset 0 4px 0 rgba(255,255,255,.48)!important;}
+.compact-room:before{content:'';position:absolute;left:6%;right:6%;top:5px;height:34%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0));pointer-events:none;z-index:1;}
+.compact-room-ball{box-shadow:inset 5px 5px 7px rgba(255,255,255,.92),inset -8px -9px 12px rgba(0,0,0,.22),0 8px 13px rgba(0,0,0,.25)!important;}
+.compact-room-info{box-shadow:inset 0 2px 0 rgba(255,255,255,.95),inset 0 -5px 9px rgba(0,80,140,.08),0 5px 9px rgba(0,65,125,.15);}
+.compact-join{box-shadow:inset 0 3px 0 rgba(255,255,255,.34),0 5px 0 #047342,0 10px 14px rgba(0,0,0,.18)!important;}
+.live-section{overflow:visible!important;box-shadow:0 15px 28px rgba(0,73,145,.22),inset 0 3px 0 rgba(255,255,255,.9)!important;}
+.live-cards-grid{overflow:visible!important;perspective:none!important;transform:none!important;}
+.live-card-wrap{width:100%;min-width:0;overflow:visible;transform:none!important;}
+.live-cards-grid .bingo-card-frame{transform:none!important;transform-style:flat!important;will-change:auto!important;}
+.live-cards-grid .bingo-card{transform:none!important;}
+.live-cards-grid .bingo-cell-wrap{transform:none!important;}
+.win-firework-label b{display:block;font-size:1.75rem;line-height:1.05;margin-top:3px;color:#fff56b;text-shadow:0 2px 0 rgba(120,0,90,.25);}
+.win-firework-particle{position:absolute;left:50%;top:42%;width:9px;height:22px;border-radius:999px;background:linear-gradient(180deg,#fff,#ff3db8);box-shadow:0 0 9px rgba(255,255,255,.8);transform:rotate(var(--angle)) translateY(calc(-1 * var(--distance)));transform-origin:50% 0;animation:winParticle 1.15s cubic-bezier(.15,.7,.25,1) forwards;}
+@keyframes winParticle{0%{opacity:1;transform:rotate(var(--angle)) translateY(-8px) scale(.5)}100%{opacity:0;transform:rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(1)}}
+@media(max-width:760px){
+  body{overflow-x:hidden!important;overscroll-behavior-x:none;}
+  .compact-room-grid{grid-template-columns:1fr!important;}
+  .compact-room{min-width:0;}
+  .live-section{margin-left:8px!important;margin-right:8px!important;}
+  .live-cards-grid .bingo-card-frame{margin-left:auto!important;margin-right:auto!important;}
+  .win-firework-host{overflow:hidden!important;}
+  .win-firework-label{top:53%!important;max-width:calc(100vw - 36px)!important;min-width:0!important;width:min(330px,calc(100vw - 36px));padding:14px 16px!important;}
+}
+
 </style>
 </head>
 <body>
@@ -1510,7 +1544,11 @@ async function togglePlayerPaid(roomId, encodedName, checked){
   const patch=checked ? {has_paid:true,amount_paid:Number(room.entry_fee||0),paid_confirmed_at:new Date().toISOString()} : {has_paid:false,amount_paid:Number(room.entry_fee||0),paid_confirmed_at:null};
   const {error}=await supabase.from('bingo_cards').update(patch).in('id',ids);
   if(error){alert('Could not update payment: '+error.message);return;}
-  await loadRoomGame(roomId); renderPaidPlayerAdmin(); renderRooms();
+  // Payment changes alter the three live prize pots. Recalculate immediately
+  // so players see the new amounts without waiting for another game action.
+  await loadRoomGame(roomId);
+  await recalcPots(game.id);
+  renderPaidPlayerAdmin(); renderRooms();
 }
 
 async function confirmAllPaidPlayers(){
@@ -1523,7 +1561,9 @@ async function confirmAllPaidPlayers(){
   if(!confirm(`Confirm ALL ${cards.length} unpaid card${cards.length===1?'':'s'} in ${room.name} as paid?`)) return;
   const {error}=await supabase.from('bingo_cards').update({has_paid:true,amount_paid:Number(room.entry_fee||0),paid_confirmed_at:new Date().toISOString()}).in('id',cards.map(c=>c.id));
   if(error) return alert('Could not confirm everyone: '+error.message);
-  await loadRoomGame(roomId); renderPaidPlayerAdmin(); renderRooms();
+  await loadRoomGame(roomId);
+  await recalcPots(game.id);
+  renderPaidPlayerAdmin(); renderRooms();
   alert(`✓ Confirmed ${cards.length} paid card${cards.length===1?'':'s'} in ${room.name}.`);
 }
 
@@ -1734,11 +1774,22 @@ async function doCallNumber(game){
 }
 
 async function checkForWins(gameRaw){
-  // re-fetch the freshest game row so multiple tabs racing don't double-award
+  // Re-fetch the freshest game and paid cards so the payout shown to players
+  // is based on the current confirmed money, not a stale cached pot.
   const { data: game } = await supabase.from('bingo_games').select('*').eq('id', gameRaw.id).maybeSingle();
   if(!game) return;
-
-  const cards = (cardsCache[game.id] || []).filter(c => c.has_paid);
+  const { data: freshPaidCards, error: paidCardsError } = await supabase.from('bingo_cards')
+    .select('*').eq('game_id', game.id).eq('has_paid', true);
+  if(paidCardsError) { console.error('Could not refresh paid cards for win check:', paidCardsError); return; }
+  const cards = freshPaidCards || [];
+  cardsCache[game.id] = [...(cardsCache[game.id] || []).filter(c => !c.has_paid), ...cards];
+  const collected = cards.reduce((sum,c) => sum + Number(c.amount_paid || 0), 0);
+  const livePots = { pot_one: collected * 0.10, pot_two: collected * 0.20, pot_full: collected * 0.50 };
+  if(Number(game.pot_one || 0) !== livePots.pot_one || Number(game.pot_two || 0) !== livePots.pot_two || Number(game.pot_full || 0) !== livePots.pot_full){
+    await supabase.from('bingo_games').update(livePots).eq('id', game.id);
+    Object.assign(game, livePots);
+    if(gamesCache[game.room_id]) Object.assign(gamesCache[game.room_id], livePots);
+  }
   const calledSet = new Set(callsCache[game.id] || []);
   if(cards.length === 0) return;
 
@@ -2037,17 +2088,25 @@ function showWinnerFirework(wins, tier){
   if(!wins || !wins.length) return;
   const names = [...new Set(wins.map(w => w.player_name || 'A player'))];
   const name = names.length === 1 ? names[0] : `${names.slice(0,-1).join(', ')} & ${names[names.length-1]}`;
-  const amount = wins[0].payout > 0 ? (names.length > 1 ? `${formatMoney(wins[0].payout)} each` : formatMoney(wins[0].payout)) : 'Prize won';
+  const amount = names.length > 1 ? `${formatMoney(Number(wins[0].payout || 0))} each` : formatMoney(Number(wins[0].payout || 0));
   const host = document.createElement('div');
   host.className = 'win-firework-host';
   const burst = document.createElement('div');
   burst.className = 'win-firework-burst';
   const label = document.createElement('div');
   label.className = 'win-firework-label';
-  label.innerHTML = `<small>🎉 WINNER</small><strong>${escapeHtml(name)}</strong><span>${escapeHtml(TIER_LABELS[tier] || tier.toUpperCase())} • ${escapeHtml(amount)}</span>`;
+  label.innerHTML = `<small>🎉 WINNER</small><strong>${escapeHtml(name)}</strong><span>${escapeHtml(TIER_LABELS[tier] || tier.toUpperCase())}</span><b>${escapeHtml(amount)}</b>`;
   host.append(burst,label);
+  for(let i=0;i<24;i++){
+    const particle=document.createElement('i');
+    particle.className='win-firework-particle';
+    particle.style.setProperty('--angle', `${(i/24)*360}deg`);
+    particle.style.setProperty('--distance', `${70 + Math.random()*150}px`);
+    particle.style.animationDelay = `${Math.random()*0.18}s`;
+    host.appendChild(particle);
+  }
   document.body.appendChild(host);
-  setTimeout(()=>host.remove(),5000);
+  setTimeout(()=>host.remove(),6000);
 }
 
 function renderRoomCard(room){
@@ -2487,7 +2546,13 @@ async function recalcPots(gameId){
   const potOne = collected * 0.10;
   const potTwo = collected * 0.20;
   const potFull = collected * 0.50;
-  await supabase.from('bingo_games').update({ pot_one: potOne, pot_two: potTwo, pot_full: potFull }).eq('id', gameId);
+  const patch = { pot_one: potOne, pot_two: potTwo, pot_full: potFull };
+  const { error } = await supabase.from('bingo_games').update(patch).eq('id', gameId);
+  if(error) console.error('Could not recalculate prize pots:', error);
+  Object.keys(gamesCache).forEach(roomId => {
+    if(gamesCache[roomId]?.id === gameId) Object.assign(gamesCache[roomId], patch);
+  });
+  return patch;
 }
 
 /* ============ PHASE 1: REALTIME (replaces 5s polling) ============
