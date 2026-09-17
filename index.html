@@ -1536,6 +1536,185 @@ section.compact-lobby[aria-label] .compact-header{
   box-shadow:inset 0 5px 0 rgba(255,255,255,.5),0 16px 0 rgba(0,60,90,.12),0 26px 34px rgba(40,20,90,.22)!important;
 }
 </style>
+
+<style id="bonus-bingo-clean-3d-upgrade">
+/* ===== CLEAN 3D/4D VISUAL UPGRADE =====
+   Visual-only layer: existing game logic and Supabase code are preserved.
+*/
+.app::before,
+section.compact-lobby[aria-label]::before,
+.compact-lobby::before,
+.compact-lobby::after {
+  display:none !important;
+}
+
+/* Remove the blank-dot decorative balls/sparks that were appearing around the page. */
+.bb-scene-art .bb-art-ball,
+.bb-scene-art .bb-art-star,
+.bb-scene-art .bb-art-ticket {
+  display:none !important;
+}
+
+/* Cleaner background with no decorative edge circles. */
+section.compact-lobby[aria-label] {
+  background:
+    radial-gradient(ellipse 520px 420px at 50% 0%, rgba(255,255,255,.72), transparent 66%),
+    linear-gradient(145deg,#06b9ed 0%,#26cbe8 28%,#6ddfe8 48%,#eefcff 63%,#fff4cf 80%,#d9efff 100%)
+    !important;
+}
+
+/* Cleaner colourful header. */
+section.compact-lobby[aria-label] .compact-header {
+  background:
+    radial-gradient(circle at 50% -20%, rgba(255,255,255,.75), transparent 38%),
+    linear-gradient(145deg,#087ed2 0%,#13b9e9 42%,#27d59a 100%)
+    !important;
+}
+
+/* Real numbered header balls get stronger 3D depth and gloss. */
+.compact-ball {
+  position:absolute !important;
+  overflow:hidden !important;
+  transform-style:preserve-3d !important;
+  animation:bonusBallFloat 3.8s ease-in-out infinite !important;
+  will-change:transform !important;
+}
+.compact-ball:nth-child(2){animation-delay:-.9s !important}
+.compact-ball:nth-child(3){animation-delay:-1.8s !important}
+.compact-ball:nth-child(4){animation-delay:-2.7s !important}
+.compact-ball::before {
+  content:"" !important;
+  position:absolute !important;
+  left:14% !important;
+  top:9% !important;
+  width:42% !important;
+  height:23% !important;
+  border-radius:50% !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,0)) !important;
+  filter:blur(2px) !important;
+  pointer-events:none !important;
+}
+.compact-ball::after {
+  content:"" !important;
+  position:absolute !important;
+  inset:9% !important;
+  border-radius:50% !important;
+  border:2px solid rgba(255,255,255,.34) !important;
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.06) !important;
+  pointer-events:none !important;
+}
+@keyframes bonusBallFloat {
+  0%,100% { transform:translate3d(0,0,0) rotateZ(0deg) scale(1); }
+  50% { transform:translate3d(0,-5px,0) rotateZ(2deg) scale(1.025); }
+}
+
+/* Premium room cards. */
+.compact-room {
+  transform-style:preserve-3d !important;
+  box-shadow:
+    0 12px 0 rgba(0,65,125,.12),
+    0 22px 38px rgba(0,55,120,.18),
+    inset 0 2px 0 rgba(255,255,255,.95) !important;
+}
+
+/* Bingo-card frames: deeper 3D/glass appearance. */
+.main-card-grid .bingo-card-frame,
+.live-cards-grid .bingo-card-frame,
+.showcase-card-grid .bingo-card-frame {
+  transform-style:preserve-3d !important;
+  perspective:900px !important;
+  box-shadow:
+    0 5px 0 rgba(0,76,125,.16),
+    0 16px 24px rgba(0,55,120,.20),
+    0 28px 42px rgba(0,45,100,.14),
+    inset 0 3px 0 rgba(255,255,255,.92) !important;
+}
+.main-card-grid .bingo-card,
+.live-cards-grid .bingo-card,
+.showcase-card-grid .bingo-card {
+  transform-style:preserve-3d !important;
+  box-shadow:
+    inset 0 3px 0 rgba(255,255,255,.98),
+    inset 0 -10px 18px rgba(30,105,155,.07),
+    0 3px 9px rgba(20,70,120,.18) !important;
+}
+
+/* Glossy spherical number balls on the cards. */
+.main-card-grid .bingo-ball,
+.live-cards-grid .bingo-ball,
+.showcase-card-grid .bingo-ball {
+  position:relative !important;
+  overflow:hidden !important;
+  transform-style:preserve-3d !important;
+  background:
+    radial-gradient(circle at 29% 19%,#fff 0 13%,#f9fdff 25%,#eaf6ff 57%,#bfd7ea 82%,#8eaec7 100%) !important;
+  border:3px solid rgba(79,129,169,.42) !important;
+  box-shadow:
+    inset 5px 5px 7px rgba(255,255,255,.98),
+    inset -8px -9px 12px rgba(45,91,125,.27),
+    0 4px 0 rgba(38,83,120,.16),
+    0 7px 12px rgba(20,65,110,.28) !important;
+}
+.main-card-grid .bingo-ball::before,
+.live-cards-grid .bingo-ball::before,
+.showcase-card-grid .bingo-ball::before {
+  content:"" !important;
+  position:absolute !important;
+  left:17% !important;
+  top:9% !important;
+  width:42% !important;
+  height:20% !important;
+  border-radius:50% !important;
+  background:rgba(255,255,255,.72) !important;
+  filter:blur(2px) !important;
+  pointer-events:none !important;
+}
+.main-card-grid .bingo-ball.marked,
+.live-cards-grid .bingo-ball.marked,
+.showcase-card-grid .bingo-ball.marked {
+  background:
+    radial-gradient(circle at 28% 18%,#ffd5f5 0 12%,#ff71d4 32%,#e516a7 60%,#7b006f 88%,#4c0059 100%) !important;
+  border-color:#ffb0e8 !important;
+  box-shadow:
+    inset 5px 5px 8px rgba(255,255,255,.66),
+    inset -8px -10px 13px rgba(75,0,70,.38),
+    0 4px 0 rgba(91,0,80,.2),
+    0 8px 13px rgba(100,0,90,.34) !important;
+}
+
+/* Stronger depth for stats/prize panels. */
+.compact-stats,
+.main-stats {
+  box-shadow:
+    0 9px 0 rgba(0,72,120,.10),
+    0 20px 30px rgba(0,55,115,.15),
+    inset 0 2px 0 rgba(255,255,255,.98) !important;
+}
+
+/* Clean, raised navigation. */
+.compact-nav,
+.main-bottom-nav {
+  box-shadow:
+    0 -5px 0 rgba(255,255,255,.55),
+    0 -12px 28px rgba(0,50,110,.20),
+    inset 0 3px 0 rgba(255,255,255,.25) !important;
+}
+
+/* Stable on phones. */
+@media (max-width:760px) {
+  .compact-ball { animation:bonusBallFloatMobile 4.2s ease-in-out infinite !important; }
+  .main-card-grid .bingo-card-frame,
+  .live-cards-grid .bingo-card-frame,
+  .showcase-card-grid .bingo-card-frame {
+    transform:none !important;
+  }
+}
+@keyframes bonusBallFloatMobile {
+  0%,100% { transform:translate3d(0,0,0); }
+  50% { transform:translate3d(0,-3px,0); }
+}
+</style>
+
 </head>
 <body>
 
