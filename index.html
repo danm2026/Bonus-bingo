@@ -1722,6 +1722,161 @@ section.compact-lobby[aria-label="Bonus Bingo games"]{
 }
 </style>
 
+
+<style id="bonus-bingo-vivid-balls-final">
+html, body, body::before, body::after, .app {
+  background:#06142f !important;
+  background-image:none !important;
+}
+body { overflow-x:hidden !important; }
+
+.compact-lobby,
+section.compact-lobby,
+section.compact-lobby[aria-label] {
+  background:
+    radial-gradient(circle at 50% 8%, rgba(0,220,255,.20), transparent 25%),
+    radial-gradient(circle at 8% 50%, rgba(0,102,255,.18), transparent 28%),
+    radial-gradient(circle at 92% 50%, rgba(255,0,180,.16), transparent 28%),
+    linear-gradient(180deg,#061735 0%,#082f61 52%,#04162f 100%) !important;
+}
+.compact-lobby::before,.compact-lobby::after,
+.bb-scene-art::before,.bb-scene-art::after {
+  display:none !important;
+  background:none !important;
+}
+
+/* Lots of colourful numbered balls behind the interface. */
+.bb-background-ball-cloud {
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  overflow:hidden !important;
+}
+.bb-bg-ball {
+  position:absolute !important;
+  left:var(--x) !important;
+  top:var(--y) !important;
+  width:var(--s) !important;
+  height:var(--s) !important;
+  border-radius:50% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  color:#fff !important;
+  font-weight:1000 !important;
+  font-size:calc(var(--s) * .34) !important;
+  background:
+    radial-gradient(circle at 28% 17%,#fff 0%,rgba(255,255,255,.95) 7%,
+      var(--c1) 19%,var(--c2) 48%,var(--c3) 74%,var(--c4) 100%) !important;
+  border:5px solid rgba(255,255,255,.82) !important;
+  text-shadow:0 3px 0 rgba(0,0,0,.28),0 6px 10px rgba(0,0,0,.35) !important;
+  box-shadow:
+    inset 9px 9px 13px rgba(255,255,255,.68),
+    inset -13px -15px 20px rgba(0,0,0,.38),
+    0 8px 0 rgba(0,0,0,.22),
+    0 16px 28px rgba(0,0,0,.45) !important;
+  filter:saturate(1.65) contrast(1.1) !important;
+  opacity:.90 !important;
+  animation:bbVividFloat var(--t) ease-in-out var(--d) infinite alternate !important;
+}
+.bb-bg-ball::before {
+  content:"" !important;
+  position:absolute !important;
+  left:18% !important; top:9% !important;
+  width:38% !important; height:18% !important;
+  border-radius:50% !important;
+  background:rgba(255,255,255,.78) !important;
+  filter:blur(2px) !important;
+}
+@keyframes bbVividFloat {
+  from { transform:translate3d(0,0,0) rotate(var(--r)) scale(.95); }
+  to { transform:translate3d(8px,-18px,0) rotate(calc(var(--r) + 8deg)) scale(1.05); }
+}
+
+/* Put all game UI above the balls. */
+.compact-header,.compact-countdown,.compact-stats,
+.compact-section,.compact-nav { position:relative !important; z-index:4 !important; }
+
+/* Remove old blank pink/green dot decorations. */
+.compact-lobby > .pink-ball,
+.compact-lobby > .green-ball,
+.compact-lobby .decorative-ball,
+.compact-lobby .edge-ball,
+.compact-lobby .side-ball {
+  display:none !important;
+}
+
+/* Vivid 4D stats panels. */
+.compact-stats {
+  background:linear-gradient(145deg,#102d5d,#061b3c) !important;
+  border:4px solid rgba(255,255,255,.92) !important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.35),
+             0 10px 0 rgba(0,0,0,.24),
+             0 24px 38px rgba(0,0,0,.35) !important;
+}
+.compact-stats > div {
+  background:linear-gradient(145deg,rgba(0,210,255,.38),rgba(5,55,110,.88)) !important;
+  border:2px solid rgba(255,255,255,.16) !important;
+  border-radius:20px !important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.28),
+             inset 0 -10px 18px rgba(0,0,0,.18),
+             0 7px 12px rgba(0,0,0,.24) !important;
+}
+.compact-stats > div:nth-child(2) {
+  background:linear-gradient(145deg,rgba(190,45,255,.42),rgba(42,25,108,.9)) !important;
+}
+.compact-stats > div:nth-child(3) {
+  background:linear-gradient(145deg,rgba(0,235,145,.42),rgba(0,91,82,.9)) !important;
+}
+.compact-stats > div:nth-child(4) {
+  background:linear-gradient(145deg,rgba(0,150,255,.45),rgba(0,53,112,.9)) !important;
+}
+.compact-stats > div:nth-child(5) {
+  background:linear-gradient(145deg,rgba(255,45,180,.42),rgba(93,18,101,.9)) !important;
+}
+.compact-stats span {
+  color:#fff !important;
+  font-size:clamp(1rem,2.4vw,1.25rem) !important;
+  font-weight:1000 !important;
+  text-shadow:0 3px 7px rgba(0,0,0,.5) !important;
+}
+.compact-stats strong {
+  color:#fff !important;
+  font-size:clamp(1.6rem,3.8vw,2.25rem) !important;
+  font-weight:1000 !important;
+  text-shadow:0 3px 0 rgba(0,0,0,.3),0 7px 12px rgba(0,0,0,.4) !important;
+}
+.compact-stats > div:nth-child(3) strong { color:#58ffad !important; }
+.compact-stats > div:nth-child(4) strong { color:#57d2ff !important; }
+.compact-stats > div:nth-child(5) strong { color:#ff78dc !important; }
+
+/* Huge glossy Bingo 7 ball in the open space. */
+.compact-stats::after {
+  content:"7" !important;
+  position:absolute !important;
+  right:-22px !important;
+  bottom:-32px !important;
+  width:clamp(105px,18vw,165px) !important;
+  height:clamp(105px,18vw,165px) !important;
+  border-radius:50% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  color:#fff !important;
+  font-size:clamp(3.4rem,8vw,5.3rem) !important;
+  font-weight:1000 !important;
+  background:radial-gradient(circle at 27% 17%,#fff 0%,#fffbd0 8%,#fff02e 21%,#ff9e00 49%,#ef3d00 75%,#8b1200 100%) !important;
+  border:7px solid #fff !important;
+  text-shadow:0 5px 0 #8a3000,0 9px 14px rgba(0,0,0,.5) !important;
+  box-shadow:inset 12px 12px 16px rgba(255,255,255,.7),
+             inset -18px -19px 25px rgba(100,0,0,.35),
+             0 11px 0 rgba(0,0,0,.25),
+             0 24px 34px rgba(0,0,0,.45) !important;
+  z-index:9 !important;
+}
+</style>
+
 </head>
 <body>
 
