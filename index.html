@@ -1877,6 +1877,206 @@ section.compact-lobby[aria-label] {
 }
 </style>
 
+
+<style id="bonus-bingo-final-light-ball-stage">
+/* FINAL REQUESTED LOOK:
+   Light, cheerful stage; rainbow effect is made from bingo balls, not the page.
+   No blank pink/green dot balls. No giant 7 ball. Dabbers replace that space.
+*/
+
+/* Force-remove every old rainbow background layer. */
+html, body, .app, section.compact-lobby[aria-label="Bonus Bingo games"],
+section.compact-lobby[aria-label="Bonus Bingo games"]::before,
+section.compact-lobby[aria-label="Bonus Bingo games"]::after,
+section.compact-lobby[aria-label="Bonus Bingo games"] .compact-header,
+section.compact-lobby[aria-label="Bonus Bingo games"] .compact-header::before {
+  background-image:none !important;
+}
+html,body,.app {
+  background:#dff8ff !important;
+  background-color:#dff8ff !important;
+}
+section.compact-lobby[aria-label="Bonus Bingo games"] {
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.98),rgba(238,252,255,.98) 42%,rgba(205,241,250,.98) 100%) !important;
+  background-color:#eafaff !important;
+}
+
+/* Hide ALL old decorative artwork balls/corner balls and their stars/tickets.
+   The new numbered cloud below is the only background ball decoration. */
+.bb-scene-art > .bb-art-ball,
+.bb-scene-art .bb-art-ticket,
+.bb-scene-art .bb-art-star,
+.bb-scene-art .bb-art-star-2 {
+  display:none !important;
+}
+
+/* New colourful bingo-ball background. */
+.bb-scene-art {
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+}
+.bb-background-ball-cloud {
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+}
+.bb-bg-ball {
+  position:absolute !important;
+  left:var(--x) !important;
+  top:var(--y) !important;
+  width:var(--s) !important;
+  height:var(--s) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:50% !important;
+  color:#17385e !important;
+  font-weight:1000 !important;
+  font-size:calc(var(--s)*.34) !important;
+  background:radial-gradient(circle at 27% 17%,#fff 0%,#fff 7%,var(--c1) 18%,var(--c2) 47%,var(--c3) 73%,var(--c4) 100%) !important;
+  border:5px solid rgba(255,255,255,.94) !important;
+  box-shadow:
+    inset 9px 9px 13px rgba(255,255,255,.8),
+    inset -12px -15px 20px rgba(0,0,0,.24),
+    0 8px 0 rgba(31,86,125,.12),
+    0 16px 25px rgba(22,75,110,.25) !important;
+  text-shadow:0 2px 0 rgba(255,255,255,.8),0 3px 5px rgba(0,0,0,.18) !important;
+  opacity:.88 !important;
+  animation:bbLightFloat var(--t) ease-in-out var(--d) infinite alternate !important;
+}
+.bb-bg-ball::before {
+  content:"" !important;
+  position:absolute !important;
+  left:18% !important; top:9% !important;
+  width:38% !important; height:18% !important;
+  border-radius:50% !important;
+  background:rgba(255,255,255,.82) !important;
+  filter:blur(2px) !important;
+}
+@keyframes bbLightFloat {
+  from { transform:translate3d(0,0,0) rotate(var(--r)) scale(.96); }
+  to { transform:translate3d(7px,-14px,0) rotate(calc(var(--r) + 7deg)) scale(1.04); }
+}
+
+/* UI remains in front of the ball field. */
+.compact-header,.compact-countdown,.compact-stats,.compact-section,.compact-nav {
+  position:relative !important;
+  z-index:5 !important;
+}
+
+/* Lighter, brighter 4D header. */
+section.compact-lobby[aria-label="Bonus Bingo games"] .compact-header {
+  background:linear-gradient(180deg,#fff,#e9fbff) !important;
+  border-bottom:5px solid #7ee7ff !important;
+  box-shadow:0 10px 0 rgba(37,154,205,.12),0 22px 30px rgba(27,102,145,.18),inset 0 4px 0 #fff !important;
+}
+.compact-logo {
+  filter:saturate(1.45) brightness(1.08) !important;
+  text-shadow:0 3px 0 #fff,0 6px 0 #9b5b00,0 10px 0 #6c3500,0 14px 16px rgba(0,0,0,.25) !important;
+}
+.compact-ball {
+  filter:saturate(1.35) brightness(1.08) drop-shadow(0 9px 10px rgba(0,60,120,.25)) !important;
+}
+
+/* Countdown: light, colourful, more inviting. */
+.compact-countdown {
+  background:linear-gradient(180deg,#fff,#f3fcff) !important;
+  border-color:#a8ecff !important;
+  box-shadow:0 8px 0 rgba(26,129,184,.12),0 18px 28px rgba(25,96,140,.18),inset 0 3px 0 #fff !important;
+}
+.compact-countdown-label { color:#164c83 !important; }
+.compact-countdown-time {
+  background:linear-gradient(180deg,#32d8ff 0%,#079eea 48%,#0870cf 100%) !important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.62),0 6px 0 #07559d,0 12px 18px rgba(0,116,194,.25) !important;
+  text-shadow:0 4px 0 rgba(0,68,140,.35),0 8px 14px rgba(0,0,0,.25) !important;
+}
+.compact-countdown-note {
+  background:linear-gradient(180deg,#ffb72d,#ff6b08) !important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.55),0 5px 0 #b84100 !important;
+}
+
+/* Five stat tiles: light but vivid, no balls sitting behind their headings. */
+.compact-stats {
+  background:linear-gradient(145deg,#f9feff,#c9f1ff) !important;
+  border:4px solid #fff !important;
+  box-shadow:0 9px 0 rgba(30,123,170,.13),0 20px 30px rgba(31,100,140,.20),inset 0 3px 0 #fff !important;
+  overflow:visible !important;
+}
+.compact-stats > div {
+  color:#fff !important;
+  border:2px solid rgba(255,255,255,.8) !important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.48),inset 0 -9px 14px rgba(0,0,0,.12),0 7px 12px rgba(28,85,130,.18) !important;
+}
+.compact-stats > div:nth-child(1){background:linear-gradient(145deg,#ff62b7,#ef087f) !important}
+.compact-stats > div:nth-child(2){background:linear-gradient(145deg,#b978ff,#6c20d9) !important}
+.compact-stats > div:nth-child(3){background:linear-gradient(145deg,#42edbd,#04b982) !important}
+.compact-stats > div:nth-child(4){background:linear-gradient(145deg,#4ccfff,#087edb) !important}
+.compact-stats > div:nth-child(5){background:linear-gradient(145deg,#e66fff,#a528c8) !important}
+.compact-stats span,.compact-stats strong {
+  color:#fff !important;
+  text-shadow:0 3px 0 rgba(0,0,0,.2),0 6px 10px rgba(0,0,0,.2) !important;
+}
+.compact-stats span {font-size:clamp(.92rem,2.3vw,1.18rem) !important}
+.compact-stats strong {font-size:clamp(1.45rem,3.6vw,2.1rem) !important}
+
+/* Remove the previous giant number-7 pseudo ball completely. */
+.compact-stats::after {
+  content:none !important;
+  display:none !important;
+}
+
+/* ===== PILE OF RANDOM COLOUR BINGO DABBERS ===== */
+.bb-dabber-pile {
+  position:absolute !important;
+  right:8px !important;
+  bottom:4px !important;
+  width:170px !important;
+  height:125px !important;
+  z-index:12 !important;
+  pointer-events:none !important;
+}
+.bb-dabber {
+  position:absolute !important;
+  width:34px !important;
+  height:91px !important;
+  border-radius:12px 12px 9px 9px !important;
+  transform-origin:50% 100% !important;
+  box-shadow:inset 5px 5px 7px rgba(255,255,255,.55),inset -7px -8px 10px rgba(0,0,0,.22),0 7px 10px rgba(0,0,0,.25) !important;
+  border:3px solid rgba(255,255,255,.72) !important;
+}
+.bb-dabber i {
+  position:absolute !important;
+  left:-2px !important;
+  top:-14px !important;
+  width:32px !important;
+  height:23px !important;
+  border-radius:50% 50% 38% 38% !important;
+  background:linear-gradient(180deg,#fff,#e9edf2) !important;
+  border:2px solid rgba(0,0,0,.10) !important;
+  box-shadow:inset 0 3px 4px rgba(255,255,255,.9),0 4px 6px rgba(0,0,0,.18) !important;
+}
+.bb-d1{left:9px;bottom:5px;transform:rotate(-25deg);background:linear-gradient(145deg,#ff73bd,#e8007c)}
+.bb-d2{left:39px;bottom:2px;transform:rotate(-11deg);background:linear-gradient(145deg,#67dfff,#087bdc)}
+.bb-d3{left:68px;bottom:4px;transform:rotate(7deg);background:linear-gradient(145deg,#ffd84d,#ff8500)}
+.bb-d4{left:96px;bottom:7px;transform:rotate(19deg);background:linear-gradient(145deg,#8af37c,#09a95b)}
+.bb-d5{left:30px;bottom:29px;transform:rotate(18deg) scale(.86);background:linear-gradient(145deg,#c79aff,#7322d2)}
+.bb-d6{left:66px;bottom:32px;transform:rotate(-19deg) scale(.82);background:linear-gradient(145deg,#ff8b64,#ef3218)}
+.bb-d7{left:108px;bottom:32px;transform:rotate(-5deg) scale(.78);background:linear-gradient(145deg,#65ffd5,#008f88)}
+
+@media(max-width:800px){
+  .bb-dabber-pile{right:2px !important;bottom:3px !important;transform:scale(.82) !important;transform-origin:bottom right !important}
+}
+@media(max-width:520px){
+  .bb-dabber-pile{transform:scale(.70) !important}
+}
+</style>
+
 </head>
 <body>
 
@@ -3481,6 +3681,15 @@ function renderRooms(){
         <div class="compact-brand"><div class="compact-balls"><div class="compact-ball">9</div><div class="compact-ball">17</div><div class="compact-ball">26</div><div class="compact-ball">29</div></div><div><div class="compact-logo">BONUS<br><span>BINGO</span></div><div class="compact-tag">★ PLAY ★ WIN ★ SMILE ★</div></div></div>
         <div class="compact-countdown">${(()=>{ const nextGame = allRooms.map(r=>gamesCache[r.id]).filter(g=>g?.scheduled_start).sort((a,b)=>new Date(a.scheduled_start)-new Date(b.scheduled_start))[0]; return `<div class="compact-countdown-label">NEXT GAME STARTS IN</div><div class="compact-countdown-time" data-countdown-for="${nextGame ? nextGame.id : ''}" data-scheduled="${nextGame ? nextGame.scheduled_start : ''}">${nextGame ? timeRemainingLabel(nextGame.scheduled_start) : 'TBA'}</div>`; })()}<span class="compact-countdown-note">◷ CARD SALES CLOSE — FINAL 60 SECONDS</span></div>
         <div class="compact-stats"><div><span>👥 Players Online</span><strong>${onlineCount}</strong></div><div><span>🎟️ Your Tickets</span><strong>${myCardsAcrossAllRooms().length}</strong></div><div><span>🏆 1 Line</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_one||0)))) : '£0.00'}</strong></div><div><span>🏆 2 Lines</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_two||0)))) : '£0.00'}</strong></div><div><span>🏆 Full House</span><strong>${paidRooms.length ? formatMoney(Math.max(...paidRooms.map(r=>Number(gamesCache[r.id]?.pot_full||0)))) : '£0.00'}</strong></div></div>
+<div class="bb-dabber-pile" aria-hidden="true">
+  <span class="bb-dabber bb-d1"><i></i></span>
+  <span class="bb-dabber bb-d2"><i></i></span>
+  <span class="bb-dabber bb-d3"><i></i></span>
+  <span class="bb-dabber bb-d4"><i></i></span>
+  <span class="bb-dabber bb-d5"><i></i></span>
+  <span class="bb-dabber bb-d6"><i></i></span>
+  <span class="bb-dabber bb-d7"><i></i></span>
+</div>
       </header>
       <div class="compact-section"><h2 class="compact-section-title">🎯 PLAYING ROOMS</h2><div class="compact-room-grid">${allRooms.length ? allRooms.map(renderCompactRoomCard).join('') : '<div class="compact-empty">No games are currently available.</div>'}</div></div>
       ${renderLivePlayingCards()}
@@ -3847,6 +4056,19 @@ if(previewMode){
   setInterval(loadRooms, 30000);               // slow safety-net poll in case realtime ever drops
 }
 
+})();
+</script>
+
+
+<script id="bonus-bingo-decoration-cleanup">
+(function(){
+  function cleanBonusDecor(){
+    document.querySelectorAll('.bb-art-ball').forEach(function(el){ el.style.display='none'; });
+    document.querySelectorAll('.bb-art-ticket,.bb-art-star,.bb-art-star-2').forEach(function(el){ el.style.display='none'; });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',cleanBonusDecor);
+  else cleanBonusDecor();
+  new MutationObserver(cleanBonusDecor).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 
