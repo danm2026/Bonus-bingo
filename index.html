@@ -1500,8 +1500,12 @@ body{font-synthesis:none}
 
 /* ===== The home/lobby screen paints its own full-viewport background
    (.compact-lobby) on top of body, which is why the colour change above
-   was invisible there. Overriding it directly here. ===== */
-.compact-lobby{
+   was invisible there. Overriding it directly here, with a background-
+   attachment of fixed so the colour accents sit relative to the visible
+   screen rather than the full (much taller) scrollable page. A boosted
+   selector guarantees this wins over every earlier .compact-lobby rule
+   regardless of source order. ===== */
+section.compact-lobby[aria-label]{
   background:
     radial-gradient(circle at 8% 14%, rgba(255,255,255,.95) 0 5px, rgba(255,60,150,.95) 6px 26px, rgba(150,0,80,.55) 27px 29px, transparent 33px),
     radial-gradient(circle at 92% 12%, rgba(255,255,255,.95) 0 4px, rgba(20,190,120,.95) 5px 22px, rgba(0,90,50,.55) 23px 25px, transparent 29px),
@@ -1513,6 +1517,9 @@ body{font-synthesis:none}
     radial-gradient(ellipse 360px 360px at 94% 82%, rgba(150,60,235,.36), transparent 60%),
     linear-gradient(160deg,#02b6ee 0%,#12c8ec 22%,#5ddcf2 42%,#eaf9ff 58%,#fff0c8 78%,#ffd3ec 100%)
     !important;
+  background-attachment:fixed!important;
+  background-size:100% 100vh,100% 100vh,100% 100vh,100% 100vh,100% 100vh,100% 100vh,100% 100vh,100% 100vh,100% 100%!important;
+  background-repeat:no-repeat!important;
 }
 </style>
 </head>
