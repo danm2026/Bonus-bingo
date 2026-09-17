@@ -1537,365 +1537,188 @@ section.compact-lobby[aria-label] .compact-header{
 }
 </style>
 
-<style id="bonus-bingo-4d-final">
-/* =========================================================
-   BONUS BINGO — VIBRANT 4D BINGO ARENA
-   Visual layer only. Existing game/Supabase logic is retained.
-   ========================================================= */
+<style id="bonus-bingo-true-4d-redesign">
+/* ==========================================================
+   BONUS BINGO — TRUE 4D VIBRANT REDESIGN
+   Visual layer only. Existing game/database JavaScript remains.
+   ========================================================== */
 
-/* 1) Remove the blue/rainbow webpage wash and the blank decorative balls. */
-html, body {
-  background:#f4efe4 !important;
-  overflow-x:hidden !important;
-}
-.app,
-.compact-lobby {
+/* Kill the old rainbow-painted webpage background and replace it with
+   a neutral theatrical backdrop. The rainbow is now created by real
+   numbered bingo balls floating around the page. */
+section.compact-lobby[aria-label="Bonus Bingo games"]{
+  position:relative!important;
+  overflow:hidden!important;
   background:
-    radial-gradient(circle at 15% 7%, rgba(255,255,255,.95), transparent 24%),
-    radial-gradient(circle at 88% 16%, rgba(255,215,74,.18), transparent 22%),
-    linear-gradient(180deg,#fffdf8 0%,#f5f0e7 48%,#eee8dc 100%) !important;
-}
-.compact-lobby:before,
-.compact-lobby:after,
-.main-lobby:before,
-.main-lobby:after,
-.bb-art-ball,
-.bb-art-star,
-.bb-art-ticket {
-  display:none !important;
+    radial-gradient(ellipse at 50% 12%,rgba(255,190,65,.16),transparent 34%),
+    radial-gradient(ellipse at 15% 75%,rgba(255,48,150,.14),transparent 30%),
+    radial-gradient(ellipse at 88% 55%,rgba(115,40,255,.14),transparent 30%),
+    linear-gradient(145deg,#160d16 0%,#28101f 34%,#171318 67%,#211018 100%)!important;
+  background-attachment:fixed!important;
 }
 
-/* Remove the floating blank pink/green dot circles specifically. */
-.compact-lobby .bb-art-ball,
-.compact-lobby .bb-art-star,
-.compact-lobby .bb-art-ticket {
-  display:none !important;
-}
+/* Remove every old CSS-painted corner ball / ticket / star. */
+.bb-scene-art .bb-art-ticket,.bb-scene-art .bb-art-star,.bb-scene-art .bb-art-star-2{display:none!important}
 
-/* 2) Header becomes a bright premium bingo-machine style stage. */
-.compact-header {
-  position:relative !important;
-  overflow:visible !important;
+/* The new floating bingo-ball field. */
+.bb-scene-art{position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;overflow:hidden!important}
+.bb-art-ball{
+  position:absolute!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  width:76px!important;height:76px!important;border-radius:50%!important;
+  font-style:normal!important;font-weight:1000!important;font-size:1.75rem!important;color:#fff!important;
+  border:4px solid rgba(255,255,255,.72)!important;
+  text-shadow:0 2px 1px rgba(0,0,0,.5),0 4px 7px rgba(0,0,0,.28)!important;
+  box-shadow:inset 9px 8px 12px rgba(255,255,255,.78),inset -12px -15px 18px rgba(0,0,0,.34),0 12px 18px rgba(0,0,0,.42)!important;
+  transform-style:preserve-3d!important;
+  opacity:.95!important;
+}
+.bb-art-ball:before{content:"";position:absolute;left:16%;top:10%;width:38%;height:20%;border-radius:50%;background:rgba(255,255,255,.85);filter:blur(3px)}
+.bb-art-ball:after{content:"";position:absolute;inset:9px;border-radius:50%;border:2px solid rgba(255,255,255,.32)}
+.bb-art-b1{left:-25px!important;top:170px!important;background:radial-gradient(circle at 28% 22%,#fff28a,#ffca18 38%,#e97900 72%,#8f3100)!important}
+.bb-art-b2{left:3%!important;top:590px!important;background:radial-gradient(circle at 28% 22%,#ffb0e2,#ff39aa 38%,#cc087c 72%,#710046)!important}
+.bb-art-b3{left:7%!important;top:1030px!important;background:radial-gradient(circle at 28% 22%,#b5ffd1,#2ee57b 38%,#079a52 72%,#04552e)!important}
+.bb-art-b4{right:-24px!important;top:250px!important;background:radial-gradient(circle at 28% 22%,#d5c1ff,#9259ff 38%,#5b20ce 72%,#2b126e)!important}
+.bb-art-b5{right:2%!important;top:720px!important;background:radial-gradient(circle at 28% 22%,#c9ffff,#25d7dd 38%,#0697b2 72%,#034d68)!important}
+.bb-art-b6{right:7%!important;top:1140px!important;background:radial-gradient(circle at 28% 22%,#ffd0e5,#ff628f 38%,#e22b55 72%,#75132c)!important}
+.bb-art-b7{left:23%!important;top:350px!important;width:54px!important;height:54px!important;font-size:1.25rem!important;background:radial-gradient(circle at 28% 22%,#fff,#b6b9c9 38%,#73798f 72%,#383d4c)!important}
+.bb-art-b8{right:24%!important;top:480px!important;width:58px!important;height:58px!important;font-size:1.3rem!important;background:radial-gradient(circle at 28% 22%,#ffedff,#ef72ff 38%,#a01ee0 72%,#541071)!important}
+.bb-art-b9{left:18%!important;top:880px!important;width:62px!important;height:62px!important;font-size:1.35rem!important;background:radial-gradient(circle at 28% 22%,#d6eaff,#4da4ff 38%,#176bd9 72%,#093d8b)!important}
+.bb-art-b10{right:17%!important;top:940px!important;width:62px!important;height:62px!important;font-size:1.35rem!important;background:radial-gradient(circle at 28% 22%,#fff3c4,#ffc83d 38%,#ec7b08 72%,#7c3300)!important}
+.bb-art-b11{left:35%!important;top:1210px!important;width:58px!important;height:58px!important;font-size:1.25rem!important;background:radial-gradient(circle at 28% 22%,#e2ffd1,#91df4e 38%,#40a51a 72%,#22610c)!important}
+.bb-art-b12{right:34%!important;top:1320px!important;width:64px!important;height:64px!important;font-size:1.4rem!important;background:radial-gradient(circle at 28% 22%,#ffe4ee,#ff739c 38%,#e42f61 72%,#78132d)!important}
+
+/* Keep content above the floating balls. */
+.compact-header,.compact-section,.compact-nav{position:relative!important;z-index:3!important}
+
+/* Header: deep premium stage rather than blue/rainbow. */
+.compact-header{
   background:
-    radial-gradient(circle at 50% -10%,rgba(255,255,255,.98),transparent 35%),
-    linear-gradient(135deg,#ff3f9f 0%,#ff8d2f 28%,#ffd63b 50%,#54d96f 72%,#25bce9 100%) !important;
-  border:0 !important;
-  border-bottom:6px solid rgba(255,255,255,.9) !important;
-  box-shadow:0 10px 0 rgba(40,70,90,.10),0 20px 36px rgba(70,55,25,.20) !important;
-}
-.compact-header:before {
-  background:
-    radial-gradient(circle at 10% 30%,rgba(255,255,255,.40),transparent 17%),
-    radial-gradient(circle at 90% 70%,rgba(255,255,255,.34),transparent 18%) !important;
+    radial-gradient(circle at 20% 10%,rgba(255,255,255,.13),transparent 25%),
+    radial-gradient(circle at 80% 0,rgba(255,195,55,.15),transparent 30%),
+    linear-gradient(145deg,#251020 0%,#541339 42%,#8b214c 70%,#d17a17 100%)!important;
+  border-bottom:5px solid rgba(255,218,111,.78)!important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.14),0 16px 0 rgba(0,0,0,.14),0 28px 36px rgba(0,0,0,.35)!important;
 }
 
-/* 3) Four logo balls: bigger, glossy, layered and genuinely spherical. */
-.compact-brand {
-  position:relative !important;
-  z-index:5 !important;
-  filter:drop-shadow(0 14px 15px rgba(35,35,50,.20)) !important;
-}
-.compact-balls {
-  filter:none !important;
-}
-.compact-ball {
-  overflow:hidden !important;
-  transform:translateZ(0) !important;
-  border:5px solid rgba(255,255,255,.92) !important;
-  box-shadow:
-    inset 8px 7px 10px rgba(255,255,255,.95),
-    inset -12px -14px 18px rgba(0,0,0,.25),
-    0 5px 0 rgba(0,0,0,.14),
-    0 12px 18px rgba(30,40,60,.28) !important;
-}
-.compact-ball:before {
-  content:"" !important;
-  position:absolute !important;
-  left:15% !important;
-  top:9% !important;
-  width:42% !important;
-  height:24% !important;
-  border-radius:50% !important;
-  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,0)) !important;
-  filter:blur(2px) !important;
-  z-index:3 !important;
-}
-.compact-ball:after {
-  content:"" !important;
-  position:absolute !important;
-  inset:8px !important;
-  border-radius:50% !important;
-  border:2px solid rgba(255,255,255,.55) !important;
-  box-shadow:inset 0 0 12px rgba(255,255,255,.22) !important;
-}
-.compact-ball:nth-child(1) { background:radial-gradient(circle at 30% 23%,#efffc0 0,#9df33e 28%,#26bb4f 58%,#087d3b 82%,#034d2b 100%) !important; }
-.compact-ball:nth-child(2) { background:radial-gradient(circle at 30% 23%,#e1fbff 0,#69dcff 28%,#18a9ef 57%,#0965c8 82%,#053d8c 100%) !important; }
-.compact-ball:nth-child(3) { background:radial-gradient(circle at 30% 23%,#ffe7f7 0,#ff86d1 28%,#f52e9d 57%,#c40075 82%,#73004f 100%) !important; }
-.compact-ball:nth-child(4) { background:radial-gradient(circle at 30% 23%,#ffe8ff 0,#ee9cff 28%,#b83de9 57%,#7b13c8 82%,#430078 100%) !important; }
-
-/* 4) Make BONUS BINGO a 4D/extruded logo. */
-.compact-logo {
-  position:relative !important;
-  letter-spacing:-.075em !important;
-  color:#fff !important;
+/* Logo: large extruded 4D lettering. */
+.compact-logo{
+  color:#fff!important;
+  font-weight:1000!important;
+  letter-spacing:-.055em!important;
   text-shadow:
-    0 2px 0 #fff,
-    0 5px 0 #a8b5c3,
-    0 8px 0 #50667d,
-    0 12px 0 #26394e,
-    0 17px 22px rgba(25,35,50,.40) !important;
-  filter:drop-shadow(0 4px 0 rgba(255,255,255,.35)) !important;
+    0 2px 0 #e9e9e9,
+    0 5px 0 #bdbdbd,
+    0 8px 0 #777,
+    0 12px 0 rgba(0,0,0,.42),
+    0 17px 22px rgba(0,0,0,.5)!important;
+  filter:drop-shadow(0 7px 12px rgba(0,0,0,.28))!important;
 }
-.compact-logo span {
-  color:#ffe02e !important;
+.compact-logo span{
+  color:#ffd12f!important;
   text-shadow:
-    0 2px 0 #fff7a0,
-    0 5px 0 #e9a800,
-    0 8px 0 #9a5b00,
-    0 12px 0 #573100,
-    0 17px 22px rgba(85,45,0,.35) !important;
+    0 2px 0 #fff0a5,
+    0 5px 0 #ef9b00,
+    0 8px 0 #9c5000,
+    0 12px 0 #5d2900,
+    0 17px 22px rgba(0,0,0,.48)!important;
 }
-.compact-tag {
-  background:linear-gradient(180deg,#37c8ff,#0874d2 58%,#034c9d) !important;
-  border:3px solid rgba(255,255,255,.95) !important;
-  box-shadow:
-    inset 0 4px 0 rgba(255,255,255,.52),
-    0 5px 0 #03457f,
-    0 10px 18px rgba(0,60,130,.28) !important;
+.compact-tag{
+  background:linear-gradient(180deg,#ffdc4d,#f48a00 72%,#a84000)!important;
+  border:3px solid #fff1a3!important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.5),0 5px 0 #7d2e00,0 12px 18px rgba(0,0,0,.35)!important;
 }
 
-/* 5) Next-game box: premium 4D signboard. */
-.compact-countdown {
-  position:relative !important;
-  background:linear-gradient(180deg,#fff 0%,#f7fbff 65%,#e7edf4 100%) !important;
-  border:5px solid #fff !important;
-  border-radius:32px !important;
-  box-shadow:
-    inset 0 4px 0 #fff,
-    inset 0 -8px 16px rgba(35,65,90,.08),
-    0 7px 0 rgba(41,57,77,.14),
-    0 18px 30px rgba(35,55,75,.22) !important;
+/* Top four balls are true 3D spheres. */
+.compact-balls{filter:drop-shadow(0 17px 17px rgba(0,0,0,.42))!important}
+.compact-ball{transform-style:preserve-3d!important;box-shadow:inset 9px 8px 12px rgba(255,255,255,.92),inset -12px -15px 18px rgba(0,0,0,.28),0 10px 16px rgba(0,0,0,.38)!important}
+
+/* Countdown: raised 4D signboard. */
+.compact-countdown{
+  background:linear-gradient(145deg,#fff7dc,#fff 45%,#f3d6e5)!important;
+  border:5px solid rgba(255,255,255,.96)!important;
+  border-radius:30px!important;
+  box-shadow:inset 0 4px 0 #fff,0 9px 0 rgba(77,26,52,.22),0 23px 32px rgba(0,0,0,.3)!important;
+  padding:16px!important;
 }
-.compact-countdown-label {
-  font-size:clamp(1rem,2.8vw,1.35rem) !important;
-  color:#173e70 !important;
-  letter-spacing:.04em !important;
-  text-shadow:0 2px 0 #fff !important;
+.compact-countdown-label{
+  color:#68123e!important;font-size:clamp(1.05rem,3vw,1.5rem)!important;font-weight:1000!important;
+  text-shadow:0 2px 0 #fff,0 4px 7px rgba(0,0,0,.15)!important;letter-spacing:.02em!important;
 }
-.compact-countdown-time {
-  position:relative !important;
-  overflow:hidden !important;
-  background:
-    radial-gradient(circle at 18% 18%,rgba(255,255,255,.72),transparent 18%),
-    linear-gradient(180deg,#36caff 0%,#118ce8 42%,#0758b8 75%,#043b84 100%) !important;
-  border:4px solid #fff !important;
-  border-radius:26px !important;
-  padding:9px 18px !important;
-  box-shadow:
-    inset 0 6px 0 rgba(255,255,255,.45),
-    inset 0 -9px 0 rgba(0,40,100,.24),
-    0 7px 0 #053b78,
-    0 14px 22px rgba(0,55,125,.28) !important;
-  text-shadow:
-    0 3px 0 #4d7195,
-    0 6px 0 rgba(0,30,80,.25) !important;
+.compact-countdown-time{
+  color:#fff!important;
+  background:linear-gradient(180deg,#ff8bcb 0%,#ef268f 43%,#a90062 100%)!important;
+  border:5px solid #ffd1eb!important;border-radius:25px!important;
+  box-shadow:inset 0 5px 0 rgba(255,255,255,.55),inset 0 -10px 0 rgba(79,0,45,.2),0 7px 0 #730044,0 14px 21px rgba(75,0,48,.35)!important;
+  text-shadow:0 4px 0 rgba(114,0,70,.35),0 7px 13px rgba(0,0,0,.25)!important;
+  font-weight:1000!important;letter-spacing:-.025em!important;
 }
-.compact-countdown-time:before {
-  content:"" !important;
-  position:absolute !important;
-  left:8% !important;
-  top:8% !important;
-  width:35% !important;
-  height:20% !important;
-  border-radius:50% !important;
-  background:rgba(255,255,255,.52) !important;
-  filter:blur(4px) !important;
-}
-.compact-countdown-note {
-  background:linear-gradient(180deg,#ff4ab1,#e51a91 55%,#a70067) !important;
-  border:3px solid #fff !important;
-  box-shadow:
-    inset 0 3px 0 rgba(255,255,255,.55),
-    0 5px 0 #8b0054,
-    0 9px 15px rgba(120,0,80,.22) !important;
-  letter-spacing:.02em !important;
+.compact-countdown-note{
+  display:block!important;color:#fff!important;background:linear-gradient(180deg,#ffbf39,#ed7b00)!important;
+  border:3px solid #fff1b4!important;border-radius:18px!important;padding:9px 12px!important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.55),0 5px 0 #8b3b00,0 9px 15px rgba(0,0,0,.24)!important;
+  text-shadow:0 2px 3px rgba(0,0,0,.3)!important;font-weight:1000!important;
 }
 
-/* 6) Stats box: five raised 4D tiles, each with a numbered bingo ball. */
-.compact-stats {
-  background:
-    linear-gradient(180deg,#ffffff 0%,#f7fbff 52%,#eaf1f6 100%) !important;
-  border:5px solid #fff !important;
-  border-radius:32px !important;
-  padding:12px !important;
-  box-shadow:
-    inset 0 4px 0 #fff,
-    inset 0 -8px 16px rgba(35,65,90,.06),
-    0 8px 0 rgba(41,57,77,.13),
-    0 20px 32px rgba(35,55,75,.20) !important;
-  gap:8px !important;
+/* Five prize/player tiles: colourful, large, 4D — no white background. */
+.compact-stats{
+  position:relative!important;width:min(100%,880px)!important;display:grid!important;grid-template-columns:repeat(5,1fr)!important;
+  gap:10px!important;padding:12px!important;background:linear-gradient(145deg,#32122b,#55113b 45%,#291522)!important;
+  border:4px solid rgba(255,214,91,.85)!important;border-radius:30px!important;
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.16),0 9px 0 rgba(0,0,0,.2),0 22px 35px rgba(0,0,0,.4)!important;
 }
-.compact-stats div {
-  position:relative !important;
-  overflow:hidden !important;
-  min-height:84px !important;
-  justify-content:center !important;
-  align-items:center !important;
-  text-align:center !important;
-  border:2px solid #d7e3ed !important;
-  border-radius:20px !important;
-  background:linear-gradient(145deg,#ffffff,#edf5fa) !important;
-  box-shadow:
-    inset 0 3px 0 #fff,
-    inset 0 -7px 12px rgba(40,80,110,.07),
-    0 5px 0 rgba(40,80,110,.10),
-    0 8px 14px rgba(35,65,90,.13) !important;
+.compact-stats div{
+  min-height:112px!important;position:relative!important;overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  border:3px solid rgba(255,255,255,.35)!important;border-radius:21px!important;padding:12px 5px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.06) 42%,rgba(0,0,0,.18))!important;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.4),inset 0 -9px 14px rgba(0,0,0,.18),0 7px 0 rgba(0,0,0,.25),0 12px 17px rgba(0,0,0,.24)!important;
 }
-.compact-stats div:before {
-  content:"9" !important;
-  position:absolute !important;
-  right:7px !important;
-  top:6px !important;
-  width:28px !important;
-  height:28px !important;
-  border-radius:50% !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  font-size:.78rem !important;
-  font-weight:1000 !important;
-  color:#10243d !important;
-  background:radial-gradient(circle at 30% 22%,#fff,#dff3ff 45%,#9ebed5 78%,#65859c 100%) !important;
-  border:2px solid #fff !important;
-  box-shadow:inset 3px 3px 4px rgba(255,255,255,.9),inset -4px -5px 6px rgba(0,0,0,.18),0 4px 6px rgba(0,0,0,.16) !important;
-  z-index:2 !important;
+.compact-stats div:nth-child(1){background:linear-gradient(145deg,#ff4aa9,#c80a75 55%,#650038)!important}
+.compact-stats div:nth-child(2){background:linear-gradient(145deg,#55dcff,#0b9bd0 55%,#07527d)!important}
+.compact-stats div:nth-child(3){background:linear-gradient(145deg,#8be83e,#19a64b 55%,#07582c)!important}
+.compact-stats div:nth-child(4){background:linear-gradient(145deg,#ffe35d,#ef9d08 55%,#914500)!important}
+.compact-stats div:nth-child(5){background:linear-gradient(145deg,#df76ff,#8a27d5 55%,#491073)!important}
+.compact-stats div:after{
+  content:"";position:absolute;right:-15px;top:-15px;width:55px;height:55px;border-radius:50%;
+  background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.95),rgba(255,255,255,.2) 34%,rgba(255,255,255,0) 58%);
+  pointer-events:none;
 }
-.compact-stats div:nth-child(2):before {content:"17" !important;background:radial-gradient(circle at 30% 22%,#e9ffff,#65ddff 45%,#168ee1 78%,#07549c 100%) !important;color:#fff !important;}
-.compact-stats div:nth-child(3):before {content:"26" !important;background:radial-gradient(circle at 30% 22%,#efffc4,#a2ee45 45%,#2cb84e 78%,#08743a 100%) !important;}
-.compact-stats div:nth-child(4):before {content:"29" !important;background:radial-gradient(circle at 30% 22%,#ffe9ff,#ed9aff 45%,#ae3cde 78%,#6410a0 100%) !important;}
-.compact-stats div:nth-child(5):before {content:"42" !important;background:radial-gradient(circle at 30% 22%,#fff0c7,#ffc74a 45%,#ef7c10 78%,#a84400 100%) !important;}
-.compact-stats span {
-  position:relative !important;
-  z-index:3 !important;
-  font-size:.70rem !important;
-  font-weight:1000 !important;
-  color:#183d68 !important;
-  text-shadow:0 1px 0 #fff !important;
-}
-.compact-stats strong {
-  position:relative !important;
-  z-index:3 !important;
-  font-size:1.20rem !important;
-  color:#143f7c !important;
-  text-shadow:0 2px 0 #fff !important;
-}
-.compact-stats div:nth-child(3) strong {color:#07924d !important;}
-.compact-stats div:nth-child(4) strong {color:#0a78d7 !important;}
-.compact-stats div:nth-child(5) strong {color:#8a23c7 !important;}
+.compact-stats span{font-size:clamp(.78rem,1.7vw,1rem)!important;color:#fff!important;font-weight:1000!important;text-shadow:0 2px 0 rgba(0,0,0,.35),0 3px 6px rgba(0,0,0,.3)!important;white-space:nowrap!important}
+.compact-stats strong{font-size:clamp(1.3rem,3vw,1.8rem)!important;color:#fff!important;font-weight:1000!important;text-shadow:0 3px 0 rgba(0,0,0,.3),0 5px 10px rgba(0,0,0,.35)!important;margin-top:8px!important}
+.compact-stats div:nth-child(3) strong,.compact-stats div:nth-child(4) strong,.compact-stats div:nth-child(5) strong{color:#fff!important}
 
-/* 7) Playing rooms section: white/cream arena, not blue. */
-.compact-section {
-  background:
-    radial-gradient(circle at 20% 15%,rgba(255,255,255,.9),transparent 25%),
-    linear-gradient(180deg,#fffdf8,#f1eadf) !important;
-  border-top:6px solid #fff !important;
-}
-.compact-section-title,
-.live-title {
-  background:linear-gradient(180deg,#38caff,#1187e5 55%,#0754ad) !important;
-  border:4px solid #fff !important;
-  box-shadow:inset 0 4px 0 rgba(255,255,255,.52),0 6px 0 #054a97,0 12px 18px rgba(0,55,120,.20) !important;
-  text-shadow:0 3px 0 #05488f !important;
+/* No heading balls/icons; the cards themselves carry the bingo balls. */
+.compact-stats span:first-letter{font-size:1em!important}
+
+/* Add an actual bingo cage/ball cluster into the otherwise empty mobile fifth-tile space. */
+@media(max-width:760px){
+  .compact-stats{grid-template-columns:repeat(3,1fr)!important;gap:9px!important;padding:10px!important}
+  .compact-stats div{min-height:92px!important}
+  .compact-stats:after{
+    content:"BINGO  •  7";position:absolute;right:10px;bottom:10px;width:calc((100% - 38px)/3 - 2px);height:92px;
+    display:flex;align-items:center;justify-content:center;border-radius:21px;border:3px solid #ffd55b;
+    color:#fff;font-weight:1000;font-size:.8rem;letter-spacing:.04em;
+    background:radial-gradient(circle at 30% 25%,#fff 0 4px,transparent 5px),radial-gradient(circle at 62% 55%,#ff6cb7 0 15px,#bd086b 16px 22px,transparent 23px),linear-gradient(145deg,#8b2cff,#46107e);
+    box-shadow:inset 0 3px 0 rgba(255,255,255,.45),0 7px 0 rgba(0,0,0,.28),0 12px 16px rgba(0,0,0,.28);text-shadow:0 2px 5px rgba(0,0,0,.45)
+  }
 }
 
-/* 8) Keep the real card balls glossy and premium. */
-.main-card-grid .bingo-ball,
-.live-cards-grid .bingo-ball,
-.showcase-card-grid .bingo-ball {
-  overflow:hidden !important;
-  border:3px solid rgba(255,255,255,.82) !important;
-  background:radial-gradient(circle at 29% 19%,#fff 0,#f7fdff 25%,#e0edf7 60%,#9dbbd0 100%) !important;
-  box-shadow:
-    inset 5px 5px 8px rgba(255,255,255,.98),
-    inset -8px -9px 12px rgba(30,70,100,.25),
-    0 4px 0 rgba(40,70,95,.14),
-    0 7px 11px rgba(20,60,90,.24) !important;
-}
-.main-card-grid .bingo-ball:before,
-.live-cards-grid .bingo-ball:before,
-.showcase-card-grid .bingo-ball:before {
-  content:"" !important;
-  position:absolute !important;
-  left:15% !important; top:8% !important;
-  width:40% !important; height:22% !important;
-  border-radius:50% !important;
-  background:rgba(255,255,255,.72) !important;
-  filter:blur(2px) !important;
-  pointer-events:none !important;
-}
-.main-card-grid .bingo-ball.marked,
-.live-cards-grid .bingo-ball.marked,
-.showcase-card-grid .bingo-ball.marked {
-  background:radial-gradient(circle at 28% 18%,#ffd9f6,#ff65d2 32%,#df159f 62%,#720060 100%) !important;
-  border-color:#ffb9ea !important;
-  box-shadow:
-    inset 5px 5px 8px rgba(255,255,255,.65),
-    inset -8px -9px 12px rgba(70,0,65,.38),
-    0 4px 0 rgba(80,0,70,.18),
-    0 8px 13px rgba(105,0,90,.30) !important;
-}
+/* Playing rooms and cards inherit the premium depth. */
+.compact-section-title{filter:drop-shadow(0 7px 8px rgba(0,0,0,.35))!important}
+.compact-room{box-shadow:0 10px 0 rgba(0,0,0,.2),0 22px 30px rgba(0,0,0,.35),inset 0 3px 0 rgba(255,255,255,.75)!important}
 
-/* 9) Live call balls: 3D instead of flat circles. */
-.live-call-ball {
-  border:3px solid #fff !important;
-  background:radial-gradient(circle at 30% 22%,#fff,#dff3ff 45%,#83b2d2 82%,#547e9b 100%) !important;
-  box-shadow:inset 3px 3px 5px #fff,inset -5px -6px 8px rgba(0,0,0,.18),0 5px 8px rgba(0,0,0,.20) !important;
-}
-.live-call-ball.latest {
-  background:radial-gradient(circle at 30% 22%,#fff1fc,#ff73d6 35%,#d916a0 68%,#71005e 100%) !important;
-  border-color:#fff !important;
-  animation:none !important;
-  box-shadow:inset 3px 3px 5px rgba(255,255,255,.8),inset -5px -6px 8px rgba(75,0,65,.32),0 5px 10px rgba(100,0,90,.28) !important;
-}
+/* Prevent the decorative ball field from causing layout/repaint jumps. */
+.bb-art-ball{animation:none!important;transition:none!important}
 
-/* 10) Kill transform animations on live cards: this prevents Android repaint/jump. */
-.live-cards-grid,
-.live-cards-grid .bingo-card-frame,
-.live-cards-grid .bingo-card,
-.live-cards-grid .bingo-ball,
-.compact-stats,
-.compact-countdown {
-  transform:none !important;
-  transition:none !important;
-  animation:none !important;
-  will-change:auto !important;
-}
-
-/* 11) Mobile sizing. */
-@media(max-width:760px) {
-  .compact-header {padding:22px 9px 20px !important;}
-  .compact-brand {gap:10px !important;}
-  .compact-balls {width:108px !important;height:92px !important;flex-basis:108px !important;}
-  .compact-ball {width:55px !important;height:55px !important;font-size:1.62rem !important;}
-  .compact-ball:nth-child(2),.compact-ball:nth-child(4){left:51px !important;}
-  .compact-ball:nth-child(3),.compact-ball:nth-child(4){top:39px !important;}
-  .compact-logo {font-size:2.30rem !important;}
-  .compact-countdown {width:calc(100% - 2px) !important;padding:13px !important;border-radius:27px !important;}
-  .compact-countdown-time {font-size:3rem !important;}
-  .compact-stats {grid-template-columns:repeat(3,1fr) !important;padding:9px !important;border-radius:27px !important;gap:5px !important;}
-  .compact-stats div {min-height:76px !important;border-radius:17px !important;}
-  .compact-stats div:before {width:24px !important;height:24px !important;font-size:.65rem !important;right:4px !important;top:4px !important;}
-  .compact-stats span {font-size:.56rem !important;}
-  .compact-stats strong {font-size:1.02rem !important;}
-}
-@media(max-width:430px) {
-  .compact-logo {font-size:1.95rem !important;}
-  .compact-balls {width:91px !important;height:78px !important;flex-basis:91px !important;}
-  .compact-ball {width:46px !important;height:46px !important;font-size:1.28rem !important;}
-  .compact-ball:nth-child(2),.compact-ball:nth-child(4){left:43px !important;}
-  .compact-ball:nth-child(3),.compact-ball:nth-child(4){top:33px !important;}
-  .compact-stats span {font-size:.52rem !important;}
-  .compact-stats strong {font-size:.92rem !important;}
+@media(max-width:430px){
+  .compact-header{padding:20px 8px 18px!important}
+  .compact-logo{font-size:2.05rem!important}
+  .compact-countdown{padding:11px!important;border-radius:25px!important}
+  .compact-countdown-time{font-size:2.65rem!important}
+  .compact-countdown-note{font-size:.62rem!important;padding:8px 6px!important}
+  .compact-stats span{font-size:.62rem!important}
+  .compact-stats strong{font-size:1.08rem!important}
+  .bb-art-ball{width:58px!important;height:58px!important;font-size:1.25rem!important}
 }
 </style>
 
@@ -2753,33 +2576,6 @@ async function advanceGame(roomId, manualCall){
    manually in Admin (Paid/Unpaid tag) any time, before or after a game
    starts, and can chase up or void a specific card by hand if needed. */
 
-
-function refreshLiveCallVisuals(gameId){
-  const called = new Set(callsCache[gameId] || []);
-  const section = document.getElementById('live-cards-section');
-  if(!section) return;
-
-  // Update only number-ball classes. No innerHTML replacement, no page reflow.
-  section.querySelectorAll('.bingo-ball').forEach(ball => {
-    const n = Number((ball.textContent || '').trim());
-    if(!Number.isFinite(n)) return;
-    ball.classList.toggle('marked', called.has(n));
-    ball.classList.toggle('unmarked', !called.has(n));
-  });
-
-  // Update the small "last balls" strip without rebuilding cards.
-  const strip = section.querySelector('.live-call-strip');
-  if(strip){
-    const calls = callsCache[gameId] || [];
-    const recent = calls.slice(-8).slice().reverse();
-    strip.innerHTML =
-      `<span class="live-call-label">Last ball${calls.length ? ` <span class="live-call-count">· ${calls.length} called</span>` : ''}</span>` +
-      (recent.length
-        ? recent.map((n,i)=>`<span class="live-call-ball ${i===0?'latest':''}">${n}</span>`).join('')
-        : '<span style="font-size:.68rem;color:#58708f">No numbers called yet.</span>');
-  }
-}
-
 async function doCallNumber(game){
   const called = callsCache[game.id] || [];
   const calledSet = new Set(called);
@@ -2805,7 +2601,7 @@ async function doCallNumber(game){
 
   await loadCalls(game.id);
   await checkForWins(game);
-  refreshLiveCallVisuals(game.id);
+  renderRooms();
 }
 
 async function checkForWins(gameRaw){
@@ -3523,7 +3319,9 @@ function renderRooms(){
   const freeMount = document.getElementById('free-rooms-container');
   if(mount){
     mount.innerHTML = `<section class="compact-lobby" aria-label="Bonus Bingo games">
-      <div class="bb-scene-art" aria-hidden="true"><i class="bb-art-ball bb-art-90">90</i><i class="bb-art-ball bb-art-21">21</i><i class="bb-art-ball bb-art-33">33</i><i class="bb-art-ball bb-art-65">65</i><i class="bb-art-ticket">B I N G O</i><i class="bb-art-star">★</i><i class="bb-art-star bb-art-star-2">★</i></div>
+      <div class="bb-scene-art" aria-hidden="true">
+<i class="bb-art-ball bb-art-b1">4</i><i class="bb-art-ball bb-art-b2">12</i><i class="bb-art-ball bb-art-b3">18</i><i class="bb-art-ball bb-art-b4">27</i><i class="bb-art-ball bb-art-b5">35</i><i class="bb-art-ball bb-art-b6">43</i><i class="bb-art-ball bb-art-b7">51</i><i class="bb-art-ball bb-art-b8">58</i><i class="bb-art-ball bb-art-b9">64</i><i class="bb-art-ball bb-art-b10">72</i><i class="bb-art-ball bb-art-b11">81</i><i class="bb-art-ball bb-art-b12">90</i>
+</div>
       <header class="compact-header">
         <div class="compact-brand"><div class="compact-balls"><div class="compact-ball">9</div><div class="compact-ball">17</div><div class="compact-ball">26</div><div class="compact-ball">29</div></div><div><div class="compact-logo">BONUS<br><span>BINGO</span></div><div class="compact-tag">★ PLAY ★ WIN ★ SMILE ★</div></div></div>
         <div class="compact-countdown">${(()=>{ const nextGame = allRooms.map(r=>gamesCache[r.id]).filter(g=>g?.scheduled_start).sort((a,b)=>new Date(a.scheduled_start)-new Date(b.scheduled_start))[0]; return `<div class="compact-countdown-label">NEXT GAME STARTS IN</div><div class="compact-countdown-time" data-countdown-for="${nextGame ? nextGame.id : ''}" data-scheduled="${nextGame ? nextGame.scheduled_start : ''}">${nextGame ? timeRemainingLabel(nextGame.scheduled_start) : 'TBA'}</div>`; })()}<span class="compact-countdown-note">◷ CARD SALES CLOSE — FINAL 60 SECONDS</span></div>
