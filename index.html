@@ -103,76 +103,84 @@ input,select{ border:1px solid var(--border); border-radius:10px; padding:10px; 
 }
 
 /* floating numbered bingo balls scattered around the hero, like the
-   reference art — purely decorative, sit behind all real content */
-.bb-scene-art{ position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+   reference art — purely decorative, sit behind all real content.
+   ~40 balls total: a dense field inside the header (.bb-header-art) plus
+   a lighter scatter across the rest of the page (.bb-scene-art). */
+.bb-scene-art, .bb-header-art{ position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.bb-header-art{ border-radius:inherit; }
 .bb-art-ball{
   position:absolute; width:64px; height:64px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
-  font-style:normal; font-weight:1000; font-size:1.3rem; color:#fff;
+  font-style:normal; font-weight:1000; color:#fff;
   border:4px solid rgba(255,255,255,.85);
   text-shadow:0 2px 0 rgba(0,0,0,.25);
   box-shadow:inset 3px 3px 6px rgba(255,255,255,.55),inset -5px -6px 9px rgba(0,0,0,.22),0 8px 14px rgba(0,40,90,.28);
-  opacity:.9;
+  opacity:.92;
 }
+.bb-art-ball.bb-bg-ball{ opacity:.32; }
 .bb-art-ball:nth-child(6n+1){ background:radial-gradient(circle at 32% 26%,#7be8ff,#0aa9f5 55%,#0756c7); }
 .bb-art-ball:nth-child(6n+2){ background:radial-gradient(circle at 32% 26%,#ffb0d8,#ff2f9d 55%,#a3006c); }
 .bb-art-ball:nth-child(6n+3){ background:radial-gradient(circle at 32% 26%,#ffe89a,#ffb020 55%,#c17400); }
 .bb-art-ball:nth-child(6n+4){ background:radial-gradient(circle at 32% 26%,#b6ffce,#22c55e 55%,#0d7a37); }
 .bb-art-ball:nth-child(6n+5){ background:radial-gradient(circle at 32% 26%,#d7bcff,#9333ea 55%,#5b1a9c); }
 .bb-art-ball:nth-child(6n+6){ background:radial-gradient(circle at 32% 26%,#ffc8b0,#ef4444 55%,#9c1c1c); }
-.bb-art-b1{ left:-14px; top:6px; }
-.bb-art-b2{ left:6%; top:230px; }
-.bb-art-b3{ left:-20px; top:430px; }
-.bb-art-b4{ right:-16px; top:4px; }
-.bb-art-b5{ right:4%; top:250px; }
-.bb-art-b6{ right:-22px; top:460px; }
-.bb-art-b7{ left:16%; top:600px; width:44px; height:44px; font-size:1rem; }
-.bb-art-b8{ right:15%; top:610px; width:44px; height:44px; font-size:1rem; }
-.bb-art-b9{ left:-10px; top:760px; width:50px; height:50px; font-size:1.1rem; }
-.bb-art-b10{ right:-8px; top:770px; width:50px; height:50px; font-size:1.1rem; }
-.bb-art-b11{ left:8%; top:900px; width:42px; height:42px; font-size:.95rem; }
-.bb-art-b12{ right:8%; top:900px; width:42px; height:42px; font-size:.95rem; }
 @media(max-width:760px){
-  .bb-art-ball{ width:46px; height:46px; font-size:1rem; opacity:.55; }
+  .bb-art-ball{ opacity:.6; }
+  .bb-art-ball.bb-bg-ball{ opacity:.22; }
 }
 
 /* ---------- header / hero ---------- */
 .compact-header{
-  position:relative; z-index:1;
-  background:linear-gradient(135deg,#02b9ee 0%,#48dff4 45%,#9cecff 100%);
-  color:#fff; padding:22px 16px 20px; border-radius:0 0 28px 28px;
-  box-shadow:0 12px 25px rgba(0,93,170,.25); border-bottom:3px solid rgba(255,255,255,.75);
+  position:relative; z-index:1; overflow:hidden;
+  background:
+    radial-gradient(120% 130% at 50% -25%, rgba(255,255,255,.55), transparent 46%),
+    radial-gradient(75% 60% at 12% 112%, rgba(2,50,100,.4), transparent 62%),
+    radial-gradient(75% 60% at 88% 112%, rgba(2,50,100,.4), transparent 62%),
+    linear-gradient(160deg,#02c6f7 0%,#04a7e6 32%,#0678d0 68%,#0450a0 100%);
+  color:#fff; padding:26px 16px 22px; border-radius:0 0 30px 30px;
+  box-shadow:0 14px 28px rgba(0,80,140,.35), inset 0 -18px 30px rgba(2,35,80,.35), inset 0 10px 22px rgba(255,255,255,.28);
+  border-bottom:3px solid rgba(255,255,255,.75);
 }
 
 .compact-brand.premium-brand{
-  display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px;
+  position:relative; z-index:1;
+  display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:16px;
 }
-.premium-side-balls{ display:flex; gap:8px; flex:0 0 auto; }
+.premium-side-balls{ display:flex; gap:10px; flex:0 0 auto; }
 .compact-ball{
-  width:58px; height:58px; border-radius:50%; flex:0 0 auto;
+  width:82px; height:82px; border-radius:50%; flex:0 0 auto;
   display:flex; align-items:center; justify-content:center;
-  font-weight:1000; font-size:1.5rem; color:#fff;
-  border:4px solid rgba(255,255,255,.9);
-  text-shadow:0 2px 0 rgba(0,0,0,.25);
-  box-shadow:inset 3px 3px 6px rgba(255,255,255,.6),inset -5px -6px 8px rgba(0,0,0,.22),0 6px 10px rgba(0,40,90,.3);
+  font-weight:1000; font-size:2.05rem; color:#fff;
+  border:5px solid rgba(255,255,255,.92);
+  text-shadow:0 2px 0 rgba(0,0,0,.22),0 4px 6px rgba(0,0,0,.3);
+  box-shadow:inset 4px 4px 8px rgba(255,255,255,.65),inset -7px -9px 12px rgba(0,0,0,.26),0 10px 16px rgba(0,30,80,.4),0 2px 0 rgba(255,255,255,.5);
+  transform:translateZ(0);
 }
-.premium-left-balls .compact-ball:nth-child(1){ background:radial-gradient(circle at 32% 26%,#9dffce,#22c55e 55%,#0d7a37); }
-.premium-left-balls .compact-ball:nth-child(2){ background:radial-gradient(circle at 32% 26%,#7be8ff,#0aa9f5 55%,#0756c7); }
-.premium-right-balls .compact-ball:nth-child(1){ background:radial-gradient(circle at 32% 26%,#ffb0d8,#ff2f9d 55%,#a3006c); }
-.premium-right-balls .compact-ball:nth-child(2){ background:radial-gradient(circle at 32% 26%,#d7bcff,#9333ea 55%,#5b1a9c); }
+.premium-left-balls .compact-ball:nth-child(1){ background:radial-gradient(circle at 30% 24%,#c3ffdf,#9dffce 30%,#22c55e 62%,#0d7a37); }
+.premium-left-balls .compact-ball:nth-child(2){ background:radial-gradient(circle at 30% 24%,#c9f3ff,#7be8ff 30%,#0aa9f5 62%,#0756c7); }
+.premium-right-balls .compact-ball:nth-child(1){ background:radial-gradient(circle at 30% 24%,#ffd7ec,#ffb0d8 30%,#ff2f9d 62%,#a3006c); }
+.premium-right-balls .compact-ball:nth-child(2){ background:radial-gradient(circle at 30% 24%,#ecd9ff,#d7bcff 30%,#9333ea 62%,#5b1a9c); }
 
-.premium-logo-wrap{ text-align:center; }
+.premium-logo-wrap{ position:relative; z-index:1; text-align:center; }
 .compact-logo{
-  font-family:inherit; font-weight:1000; letter-spacing:-.03em; line-height:.95;
-  font-size:2.6rem; margin:0;
-  background:linear-gradient(180deg,#fff6c9,#ffd43b 45%,#f59e0b 100%);
+  font-family:inherit; font-weight:1000; letter-spacing:-.03em; line-height:.92;
+  font-size:clamp(2.9rem, 10vw, 4.6rem); margin:0;
+  transform:perspective(420px) rotateX(6deg);
+  background:linear-gradient(180deg,#fff9d6 0%,#ffe066 30%,#ffb020 62%,#e07800 100%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  text-shadow:0 3px 0 rgba(150,80,0,.35);
-  filter:drop-shadow(0 3px 0 rgba(120,60,0,.35));
+  -webkit-text-stroke:1.5px rgba(120,60,0,.4);
+  text-shadow:
+    0 1px 0 #e0920a, 0 2px 0 #cf7f08, 0 3px 0 #bd6d07, 0 4px 0 #ac5c06,
+    0 5px 0 #9a4c05, 0 6px 0 #874004, 0 8px 14px rgba(90,40,0,.55), 0 16px 26px rgba(0,0,0,.32);
+  filter:drop-shadow(0 4px 3px rgba(90,40,0,.25));
 }
-.compact-logo span{ display:block; font-size:1.15em; color:#fff; -webkit-text-fill-color:#fff;
-  text-shadow:0 3px 0 #0969a7,0 5px 10px rgba(0,0,0,.25); }
-.compact-logo::before{ content:"👑"; display:block; font-size:.42em; margin-bottom:2px; filter:none; }
+.compact-logo span{
+  display:block; font-size:1.14em; color:#fff; -webkit-text-fill-color:#fff; -webkit-text-stroke:1.5px rgba(3,55,100,.45);
+  text-shadow:
+    0 1px 0 #0e8fd6, 0 2px 0 #0c7fc2, 0 3px 0 #0a70ae, 0 4px 0 #08609a,
+    0 5px 0 #075186, 0 6px 0 #054272, 0 9px 16px rgba(0,30,70,.55), 0 18px 28px rgba(0,0,0,.32);
+}
+.compact-logo::before{ content:"👑"; display:block; font-size:.4em; margin-bottom:4px; filter:drop-shadow(0 4px 4px rgba(0,0,0,.35)); transform:none; }
 .compact-tag{
   display:inline-block; margin-top:10px; background:linear-gradient(180deg,#1c8fe0,#0d63b8);
   border:2px solid rgba(255,255,255,.85); border-radius:999px; padding:7px 18px;
@@ -1928,10 +1936,9 @@ function renderRooms(){
   const freeMount = document.getElementById('free-rooms-container');
   if(mount){
     mount.innerHTML = `<section class="compact-lobby" aria-label="Bonus Bingo games">
-      <div class="bb-scene-art" aria-hidden="true">
-<i class="bb-art-ball bb-art-b1">4</i><i class="bb-art-ball bb-art-b2">12</i><i class="bb-art-ball bb-art-b3">18</i><i class="bb-art-ball bb-art-b4">27</i><i class="bb-art-ball bb-art-b5">35</i><i class="bb-art-ball bb-art-b6">43</i><i class="bb-art-ball bb-art-b7">51</i><i class="bb-art-ball bb-art-b8">58</i><i class="bb-art-ball bb-art-b9">64</i><i class="bb-art-ball bb-art-b10">72</i><i class="bb-art-ball bb-art-b11">81</i><i class="bb-art-ball bb-art-b12">90</i>
-</div>
+      <div class="bb-scene-art" aria-hidden="true"><i class="bb-art-ball bb-bg-ball" style="left:43.8%;top:59.7%;width:48px;height:48px;font-size:17.3px">87</i><i class="bb-art-ball bb-bg-ball" style="left:45.2%;top:55.6%;width:39px;height:39px;font-size:14.0px">1</i><i class="bb-art-ball bb-bg-ball" style="left:14.3%;top:55.9%;width:40px;height:40px;font-size:14.4px">21</i><i class="bb-art-ball bb-bg-ball" style="left:81.2%;top:23.3%;width:32px;height:32px;font-size:11.5px">45</i><i class="bb-art-ball bb-bg-ball" style="left:4.0%;top:79.2%;width:42px;height:42px;font-size:15.1px">75</i><i class="bb-art-ball bb-bg-ball" style="left:-1.4%;top:92.6%;width:49px;height:49px;font-size:17.6px">22</i><i class="bb-art-ball bb-bg-ball" style="left:65.9%;top:64.0%;width:28px;height:28px;font-size:10.1px">84</i><i class="bb-art-ball bb-bg-ball" style="left:-4.3%;top:57.2%;width:26px;height:26px;font-size:9.4px">10</i><i class="bb-art-ball bb-bg-ball" style="left:14.9%;top:34.9%;width:25px;height:25px;font-size:9.0px">83</i><i class="bb-art-ball bb-bg-ball" style="left:45.0%;top:50.4%;width:46px;height:46px;font-size:16.6px">49</i><i class="bb-art-ball bb-bg-ball" style="left:51.1%;top:65.9%;width:37px;height:37px;font-size:13.3px">61</i><i class="bb-art-ball bb-bg-ball" style="left:66.9%;top:51.7%;width:31px;height:31px;font-size:11.2px">7</i><i class="bb-art-ball bb-bg-ball" style="left:103.7%;top:93.7%;width:46px;height:46px;font-size:16.6px">6</i><i class="bb-art-ball bb-bg-ball" style="left:71.9%;top:40.6%;width:30px;height:30px;font-size:10.8px">25</i><i class="bb-art-ball bb-bg-ball" style="left:25.8%;top:21.5%;width:44px;height:44px;font-size:15.8px">79</i><i class="bb-art-ball bb-bg-ball" style="left:38.0%;top:82.0%;width:34px;height:34px;font-size:12.2px">23</i></div>
       <header class="compact-header">
+        <div class="bb-header-art" aria-hidden="true"><i class="bb-art-ball" style="left:28.9%;top:6.9%;width:53px;height:53px;font-size:19.1px">82</i><i class="bb-art-ball" style="left:0.3%;top:50.0%;width:42px;height:42px;font-size:15.1px">15</i><i class="bb-art-ball" style="left:-1.4%;top:46.8%;width:29px;height:29px;font-size:10.4px">4</i><i class="bb-art-ball" style="left:41.4%;top:-2.2%;width:31px;height:31px;font-size:11.2px">36</i><i class="bb-art-ball" style="left:40.4%;top:82.6%;width:33px;height:33px;font-size:11.9px">32</i><i class="bb-art-ball" style="left:17.4%;top:60.3%;width:64px;height:64px;font-size:23.0px">29</i><i class="bb-art-ball" style="left:57.8%;top:34.4%;width:65px;height:65px;font-size:23.4px">18</i><i class="bb-art-ball" style="left:-2.7%;top:86.1%;width:39px;height:39px;font-size:14.0px">14</i><i class="bb-art-ball" style="left:8.4%;top:3.2%;width:40px;height:40px;font-size:14.4px">70</i><i class="bb-art-ball" style="left:85.0%;top:10.2%;width:50px;height:50px;font-size:18.0px">12</i><i class="bb-art-ball" style="left:64.8%;top:31.7%;width:49px;height:49px;font-size:17.6px">76</i><i class="bb-art-ball" style="left:-0.8%;top:-3.3%;width:36px;height:36px;font-size:13.0px">55</i><i class="bb-art-ball" style="left:69.6%;top:37.9%;width:40px;height:40px;font-size:14.4px">5</i><i class="bb-art-ball" style="left:58.8%;top:40.8%;width:39px;height:39px;font-size:14.0px">88</i><i class="bb-art-ball" style="left:82.6%;top:68.3%;width:37px;height:37px;font-size:13.3px">81</i><i class="bb-art-ball" style="left:57.5%;top:48.8%;width:61px;height:61px;font-size:22.0px">28</i><i class="bb-art-ball" style="left:75.2%;top:22.2%;width:65px;height:65px;font-size:23.4px">30</i><i class="bb-art-ball" style="left:5.5%;top:36.8%;width:57px;height:57px;font-size:20.5px">65</i><i class="bb-art-ball" style="left:9.3%;top:44.8%;width:29px;height:29px;font-size:10.4px">77</i><i class="bb-art-ball" style="left:68.2%;top:75.6%;width:50px;height:50px;font-size:18.0px">26</i><i class="bb-art-ball" style="left:91.8%;top:25.1%;width:54px;height:54px;font-size:19.4px">90</i><i class="bb-art-ball" style="left:59.8%;top:54.9%;width:45px;height:45px;font-size:16.2px">54</i><i class="bb-art-ball" style="left:87.8%;top:95.8%;width:46px;height:46px;font-size:16.6px">85</i><i class="bb-art-ball" style="left:67.7%;top:-3.2%;width:55px;height:55px;font-size:19.8px">58</i></div>
         <div class="compact-brand premium-brand">
           <div class="premium-side-balls premium-left-balls">
             <div class="compact-ball">9</div><div class="compact-ball">17</div>
